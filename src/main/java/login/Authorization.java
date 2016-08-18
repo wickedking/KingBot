@@ -12,7 +12,7 @@ public class Authorization {
 	
 	public static void main(String[] args) throws DiscordException {
 		System.out.println("Hello World");
-		client = new ClientBuilder().withToken("MjE1NjAzMjM5NzIxMjM4NTI4.CpZ9_Q.SEpxJMXqnmqHSuUXuQkEPwdZVwY").login();
+		client = new ClientBuilder().withToken("").login();
 		client.getDispatcher().registerListener(new ReadyEventTest());
 		
 	}

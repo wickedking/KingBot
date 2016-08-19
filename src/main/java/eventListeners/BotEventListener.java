@@ -3,7 +3,6 @@ package eventListeners;
 import events.BanEvent;
 import events.CommandsEvent;
 import events.GiveawayEvent;
-import events.HelloEvent;
 import events.KeywordEvent;
 import events.KickEvent;
 import events.LevelsEvent;
@@ -22,14 +21,27 @@ import sx.blah.discord.util.MessageList;
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
 
-public class ReadyEventTest {
+/**
+ * Holds all the event listeners in the methods. 
+ * @author WickedKing
+ *
+ */
+public class BotEventListener {
 
+	/**
+	 * ReadyEvent listener method
+	 * @param event
+	 */
 	@EventSubscriber
 	public void onReady(ReadyEvent event) {
 		System.out.println("ready method");
 		Authorization.readyStatus = true;
 	}
 
+	/**
+	 * MessageReceivedEvent listener method, parses message and fires new event if needed
+	 * @param event
+	 */
 	@EventSubscriber
 	public void messageEventSub(MessageReceivedEvent event){
 		if(event.getMessage().getContent().startsWith("`prune")){
@@ -64,7 +76,10 @@ public class ReadyEventTest {
 	}
 
 
-
+	/**
+	 * Bans the user mentioned
+	 * @param event
+	 */
 	@EventSubscriber
 	public void onBan(BanEvent event){
 
@@ -76,7 +91,11 @@ public class ReadyEventTest {
 		}
 
 	}
-
+	
+	/**
+	 * Kicks the user mentioned
+	 * @param event
+	 */
 	@EventSubscriber
 	public void onKick(KickEvent event){
 //		try {
@@ -89,6 +108,10 @@ public class ReadyEventTest {
 
 	}
 
+	/**
+	 * Posts the commands in the channel requested
+	 * @param event
+	 */
 	@EventSubscriber
 	public void onCommands(CommandsEvent event){
 		try {
@@ -99,6 +122,11 @@ public class ReadyEventTest {
 		}
 	}
 
+	/**
+	 * Handles the giveaways
+	 * TODO
+	 * @param event
+	 */
 	@EventSubscriber
 	public void onGiveaway(GiveawayEvent event){
 		try {
@@ -108,6 +136,11 @@ public class ReadyEventTest {
 		}
 	}
 
+	/**
+	 * Handles a timeout for the user mentioned
+	 * TODO
+	 * @param event
+	 */
 	@EventSubscriber
 	public void onTimeout(TimeoutEvent event){
 		try {
@@ -117,6 +150,10 @@ public class ReadyEventTest {
 		}
 	}
 
+	/**
+	 * Posts the keywords that have been setup for a filter
+	 * @param event
+	 */
 	@EventSubscriber
 	public void onKeyword(KeywordEvent event){
 		try {
@@ -126,6 +163,10 @@ public class ReadyEventTest {
 		}
 	}
 
+	/**
+	 * Deletes the requested number of messages from channel requested from
+	 * @param event
+	 */
 	@EventSubscriber
 	public void onPrune(PruneEvent event){
 
@@ -146,6 +187,10 @@ public class ReadyEventTest {
 	
 	}
 
+	/**
+	 * Displays the rank of the user mentioned
+	 * @param event
+	 */
 	@EventSubscriber
 	public void onRank(RankEvent event){
 		try {
@@ -155,6 +200,10 @@ public class ReadyEventTest {
 		}
 	}
 
+	/**
+	 * Displays the levels of all the people that have been logged.
+	 * @param event
+	 */
 	@EventSubscriber
 	public void onLevels(LevelsEvent event){
 		try {
@@ -162,11 +211,6 @@ public class ReadyEventTest {
 		} catch (RateLimitException | DiscordException | MissingPermissionsException e) {
 			e.printStackTrace();
 		}
-	}
-
-	@EventSubscriber
-	public void onMessage(HelloEvent event){
-		System.out.println(event.getMessage().getAuthor().getName() + " said Hello!");
 	}
 
 }

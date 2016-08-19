@@ -43,7 +43,7 @@ public class BotEventListener {
 	 * @param event
 	 */
 	@EventSubscriber
-	public void messageEventSub(MessageReceivedEvent event){
+	public void onMessageReceived(MessageReceivedEvent event){
 		if(event.getMessage().getContent().startsWith("`prune")){
 			event.getClient().getDispatcher().dispatch(new PruneEvent(event.getMessage()));
 
@@ -99,6 +99,7 @@ public class BotEventListener {
 	@EventSubscriber
 	public void onKick(KickEvent event){
 //		try {
+		System.out.println(event.getMessage().getChannel().getID());
 			try {
 				Authorization.client.getGuilds().get(0).kickUser(event.getMessage().getMentions().get(0));
 			} catch (RateLimitException | MissingPermissionsException | DiscordException e) {
@@ -212,6 +213,7 @@ public class BotEventListener {
 			e.printStackTrace();
 		}
 	}
+	
 
 }
 

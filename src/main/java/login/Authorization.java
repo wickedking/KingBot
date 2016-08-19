@@ -4,6 +4,7 @@
 package login;
 
 import eventListeners.BotEventListener;
+import eventListeners.LoggingListener;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.util.DiscordException;
@@ -32,8 +33,9 @@ public class Authorization {
 	 */
 	public static void main(String[] args) throws DiscordException {
 		System.out.println("Hello World");
-		client = new ClientBuilder().withToken("").login();
+		client = new ClientBuilder().withToken("MjE1NjAzMjM5NzIxMjM4NTI4.Cpf6lg.16OAQyifDekwKkOrVXPujqjynA4").login();
 		client.getDispatcher().registerListener(new BotEventListener());
+		client.getDispatcher().registerListener(new LoggingListener());
 		
 	}
 

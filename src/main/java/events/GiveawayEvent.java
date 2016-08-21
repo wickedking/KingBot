@@ -1,17 +1,16 @@
 package events;
 
-import sx.blah.discord.api.events.Event;
 import sx.blah.discord.handle.obj.IMessage;
 
-public class GiveawayEvent extends Event{
-private final IMessage message;
+/**
+ * Event for when a command for a Giveaway is given
+ * @author King
+ *
+ */
+public class GiveawayEvent extends CustomEvent{
 	
 	public GiveawayEvent(IMessage message){
-		this.message = message;
-	}
-	
-	public IMessage getMessage(){
-		return message;
+		super(message);
 	}
 
 }

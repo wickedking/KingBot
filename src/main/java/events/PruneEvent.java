@@ -1,16 +1,16 @@
 package events;
 
-import sx.blah.discord.api.events.Event;
 import sx.blah.discord.handle.obj.IMessage;
 
-public class PruneEvent extends Event{
-	private final IMessage message;
+/**
+ * Event for when a command for a Prune is given
+ * @author King
+ *
+ */
+public class PruneEvent extends CustomEvent{
 
 	public PruneEvent(IMessage message){
-		this.message = message;
+		super(message);
 	}
 
-	public IMessage getMessage(){
-		return message;
-	}
 }

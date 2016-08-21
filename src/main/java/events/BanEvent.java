@@ -1,16 +1,15 @@
 package events;
 
-import sx.blah.discord.api.events.Event;
 import sx.blah.discord.handle.obj.IMessage;
 
-public class BanEvent extends Event{
-private final IMessage message;
-	
+/**
+ * Event for when a command for a Ban is given
+ * @author King
+ *
+ */
+public class BanEvent extends CustomEvent{
+
 	public BanEvent(IMessage message){
-		this.message = message;
-	}
-	
-	public IMessage getMessage(){
-		return message;
+		super(message);
 	}
 }

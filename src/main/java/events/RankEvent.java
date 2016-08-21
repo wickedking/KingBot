@@ -1,16 +1,14 @@
 package events;
 
-import sx.blah.discord.api.events.Event;
 import sx.blah.discord.handle.obj.IMessage;
 
-public class RankEvent extends Event{
-	private final IMessage message;
-
+/**
+ * Event for when a command for a Rank is given
+ * @author King
+ *
+ */
+public class RankEvent extends CustomEvent{
 	public RankEvent(IMessage message){
-		this.message = message;
-	}
-
-	public IMessage getMessage(){
-		return message;
+		super(message);
 	}
 }

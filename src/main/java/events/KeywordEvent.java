@@ -1,16 +1,16 @@
 package events;
 
-import sx.blah.discord.api.events.Event;
 import sx.blah.discord.handle.obj.IMessage;
 
-public class KeywordEvent extends Event{
-	private final IMessage message;
+/**
+ * Event for when a command for a Keyword is given
+ * @author King
+ *
+ */
+public class KeywordEvent extends CustomEvent{
 
 	public KeywordEvent(IMessage message){
-		this.message = message;
+		super(message);
 	}
 
-	public IMessage getMessage(){
-		return message;
-	}
 }

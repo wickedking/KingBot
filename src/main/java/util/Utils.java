@@ -1,10 +1,12 @@
 package util;
 
+import java.util.List;
 import java.util.Map;
 
 import login.Authorization;
 import sx.blah.discord.handle.impl.obj.PrivateChannel;
 import sx.blah.discord.handle.obj.IChannel;
+import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.MessageBuilder;
@@ -12,22 +14,39 @@ import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
 import sx.blah.discord.util.RequestBuffer;
 
+/**
+ * Utility class to provide common methods for posting messages and other methods
+ * @author King
+ *
+ */
 public class Utils {
 	
-	
-	public void DMUser() {
+	/**
+	 * Role for admin for the bot
+	 */
+	private static String botAdmin = "Bot Admin";
 
-	}
-
+	/**
+	 * Used to save user created Keywords
+	 */
 	public void saveKeywords() {
 
 	}
 
+	/**
+	 * Logs message with the keywords for the server
+	 * @return
+	 */
 	public Map<String, String> getKeywords(){
 
 		return null;
 	}
 
+	/**
+	 * Writes specified message to the specified channel
+	 * @param message
+	 * @param channel
+	 */
 	public static void WriteMessageToChannel(String message, IChannel channel){
 		//edit message to remove the actual mentions so logging doesnt mention people
 		RequestBuffer.request(() -> {
@@ -44,6 +63,11 @@ public class Utils {
 
 	}
 	
+	/**
+	 * Will private message the user with the message
+	 * @param user
+	 * @param message
+	 */
 	public static void PrivateMessageUser(IUser user, String message){
 		PrivateChannel dm = new PrivateChannel(Authorization.client, user, message);
 		try {
@@ -52,6 +76,20 @@ public class Utils {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * Will determine if the user has the admin role
+	 * @param roles
+	 * @return
+	 */
+	public static boolean isBotAdmin(List<IRole> roles){
+		for(IRole role : roles){
+			if(role.getName().equals(botAdmin)){
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

@@ -2,7 +2,6 @@ package eventListeners;
 
 import events.BanEvent;
 import events.CommandsEvent;
-import events.CustomEvent;
 import events.GiveawayEvent;
 import events.KeywordEvent;
 import events.KickEvent;
@@ -17,7 +16,6 @@ import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.MessageBuilder;
 import sx.blah.discord.util.MessageList;
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
@@ -42,6 +40,7 @@ public class BotEventListener {
 
 	/**
 	 * MessageReceivedEvent listener method, parses message and fires new event if needed
+	 * Really need to refactor
 	 * @param event
 	 */
 	@EventSubscriber
@@ -97,13 +96,18 @@ public class BotEventListener {
 	 */
 	@EventSubscriber
 	public void onBan(BanEvent event){
-
-		IGuild guild = event.getClient().getGuilds().get(0);
-		try {
-			Authorization.client.getGuildByID(guild.getID()).banUser(event.getMessage().getMentions().get(0));
-		} catch (RateLimitException | MissingPermissionsException | DiscordException e) {
-			e.printStackTrace();
+		boolean isAdmin = Utils.isBotAdmin(event.getMessage().getAuthor().getRolesForGuild(event.getMessage().getGuild()));
+		if(isAdmin){
+			IGuild guild = event.getClient().getGuilds().get(0);
+			try {
+				Authorization.client.getGuildByID(guild.getID()).banUser(event.getMessage().getMentions().get(0));
+			} catch (RateLimitException | MissingPermissionsException | DiscordException e) {
+				e.printStackTrace();
+			}
+		} else{
+			Utils.WriteMessageToChannel("Not Authorized to use this command", event.getMessage().getChannel());
 		}
+
 
 	}
 
@@ -113,14 +117,19 @@ public class BotEventListener {
 	 */
 	@EventSubscriber
 	public void onKick(KickEvent event){
-		//		try {
-		System.out.println(event.getMessage().getChannel().getID());
-		try {
-			Authorization.client.getGuilds().get(0).kickUser(event.getMessage().getMentions().get(0));
-		} catch (RateLimitException | MissingPermissionsException | DiscordException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+		boolean isAdmin = Utils.isBotAdmin(event.getMessage().getAuthor().getRolesForGuild(event.getMessage().getGuild()));
+		if(isAdmin){
+			try {
+				Authorization.client.getGuilds().get(0).kickUser(event.getMessage().getMentions().get(0));
+			} catch (RateLimitException | MissingPermissionsException | DiscordException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+			Utils.WriteMessageToChannel("Not Authorized to use this command", event.getMessage().getChannel());
 		}
+
 
 	}
 
@@ -130,7 +139,7 @@ public class BotEventListener {
 	 */
 	@EventSubscriber
 	public void onCommands(CommandsEvent event){
-		String commands = "````ban - Bans the person tagged \n `commands - Lists the commands \n `giveaway - Starts a giveaway, i think. idk yet \n `keyword - Lists the current keyword filters \n `kick - Kicks the person from the server \n `levels - Shows a link to the website with all the levels \n `prune - Deletes the last 'X' messages \n `rank - Shows your current rank \n `timeout - Removes the ability to type or talk from the person```";
+		String commands = "````ban - Bans the person tagged \n `commands - Lists the commands \n `giveaway - Starts a giveaway, i think. idk yet \n `keyword - Lists the current keyword filters \n `kick - Kicks the person from the server \n `levels - Shows a link to the website with all the levels \n `prune - Deletes the last 'X' messages \n `rank - Shows your current rank \n `timeout - Removes the ability to type or talk from the person \n `serverinfo - Shows basic info about the server```";
 		Utils.WriteMessageToChannel(event.getMessage().getAuthor().mention() + commands, event.getMessage().getChannel());
 	}
 
@@ -152,7 +161,13 @@ public class BotEventListener {
 	 */
 	@EventSubscriber
 	public void onTimeout(TimeoutEvent event){
-		Utils.WriteMessageToChannel("This feature is not yet implemented. Please tell WickedKing to get off his lazy ass and finish it", event.getMessage().getChannel());
+		boolean isAdmin = Utils.isBotAdmin(event.getMessage().getAuthor().getRolesForGuild(event.getMessage().getGuild()));
+		if(isAdmin){
+			Utils.WriteMessageToChannel("This feature is not yet implemented. Please tell WickedKing to get off his lazy ass and finish it", event.getMessage().getChannel());
+		}else {
+			Utils.WriteMessageToChannel("Not Authorized to use this command", event.getMessage().getChannel());
+		}
+
 	}
 
 	/**
@@ -161,7 +176,13 @@ public class BotEventListener {
 	 */
 	@EventSubscriber
 	public void onKeyword(KeywordEvent event){
-		Utils.WriteMessageToChannel("This feature is not yet implemented. Please tell WickedKing to get off his lazy ass and finish it", event.getMessage().getChannel());
+		boolean isAdmin = Utils.isBotAdmin(event.getMessage().getAuthor().getRolesForGuild(event.getMessage().getGuild()));
+		if(isAdmin){
+			Utils.WriteMessageToChannel("This feature is not yet implemented. Please tell WickedKing to get off his lazy ass and finish it", event.getMessage().getChannel());
+		} else {
+			Utils.WriteMessageToChannel("Not Authorized to use this command", event.getMessage().getChannel());
+		}
+
 	}
 
 	/**
@@ -170,23 +191,29 @@ public class BotEventListener {
 	 */
 	@EventSubscriber
 	public void onPrune(PruneEvent event){
-		MessageList list = event.getMessage().getChannel().getMessages();
-		String totalMessage = event.getMessage().getContent();
-		int index = totalMessage.indexOf(" ");
-		int numMessages = Integer.parseInt(totalMessage.substring(index).trim());
-		try {
-			list.get(0).delete();
-			if(numMessages <= 2){
-				for(int i = 1; i < numMessages + 1; i++){
-					list.get(i).delete();
+		boolean isAdmin = Utils.isBotAdmin(event.getMessage().getAuthor().getRolesForGuild(event.getMessage().getGuild()));
+		if(isAdmin){
+			MessageList list = event.getMessage().getChannel().getMessages();
+			String totalMessage = event.getMessage().getContent();
+			int index = totalMessage.indexOf(" ");
+			int numMessages = Integer.parseInt(totalMessage.substring(index).trim());
+			try {
+				list.get(0).delete();
+				if(numMessages <= 2){
+					for(int i = 1; i < numMessages + 1; i++){
+						list.get(i).delete();
+					}
+				} else{
+					list.bulkDelete(list.subList(0, numMessages + 1));
 				}
-			} else{
-				list.bulkDelete(list.subList(0, numMessages + 1));
+			} catch (RateLimitException | DiscordException | MissingPermissionsException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-		} catch (RateLimitException | DiscordException | MissingPermissionsException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} else{
+			Utils.WriteMessageToChannel("Not Authorized to use this command", event.getMessage().getChannel());
 		}
+
 
 	}
 
@@ -208,6 +235,10 @@ public class BotEventListener {
 		Utils.WriteMessageToChannel("This feature is not yet implemented. Please tell WickedKing to get off his lazy ass and finish it", Authorization.client.getChannelByID(event.getMessage().getChannel().getID()));
 	}
 
+	/**
+	 * Displays current Infomation about the server
+	 * @param event
+	 */
 	@EventSubscriber
 	public void onServerInfo(ServerInfoEvent event){
 		IGuild server = Authorization.client.getGuilds().get(0);

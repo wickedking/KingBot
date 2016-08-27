@@ -3,6 +3,7 @@ package util;
 import java.util.List;
 import java.util.Map;
 
+import details.ServerInfo;
 import login.Authorization;
 import sx.blah.discord.handle.impl.obj.PrivateChannel;
 import sx.blah.discord.handle.obj.IChannel;
@@ -20,6 +21,8 @@ import sx.blah.discord.util.RequestBuffer;
  *
  */
 public class Utils {
+	
+	private static String guildId = "215588890382303234";
 	
 	/**
 	 * Role for admin for the bot
@@ -92,4 +95,12 @@ public class Utils {
 		return false;
 	}
 
+	/**
+	 * Initialize database, return mapping info
+	 * @return
+	 */
+	public static void  StartupDBBot(){
+		
+		
+	}
 }

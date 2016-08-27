@@ -1,5 +1,9 @@
 package eventListeners;
 
+import java.util.List;
+
+import bean.Keywords;
+import dao.BotDAO;
 import events.BanEvent;
 import events.CommandsEvent;
 import events.GiveawayEvent;
@@ -27,6 +31,9 @@ import util.Utils;
  *
  */
 public class BotEventListener {
+	
+	//@Autowired
+	private BotDAO botDAO = new BotDAO();
 
 	/**
 	 * ReadyEvent listener method
@@ -139,6 +146,8 @@ public class BotEventListener {
 	 */
 	@EventSubscriber
 	public void onCommands(CommandsEvent event){
+		System.out.println(event.getMessage().getGuild().getID());
+		System.out.println(event.getMessage().getAuthor().getID());
 		String commands = "````ban - Bans the person tagged \n `commands - Lists the commands \n `giveaway - Starts a giveaway, i think. idk yet \n `keyword - Lists the current keyword filters \n `kick - Kicks the person from the server \n `levels - Shows a link to the website with all the levels \n `prune - Deletes the last 'X' messages \n `rank - Shows your current rank \n `timeout - Removes the ability to type or talk from the person \n `serverinfo - Shows basic info about the server```";
 		Utils.WriteMessageToChannel(event.getMessage().getAuthor().mention() + commands, event.getMessage().getChannel());
 	}
@@ -150,7 +159,7 @@ public class BotEventListener {
 	 */
 	@EventSubscriber
 	public void onGiveaway(GiveawayEvent event){
-
+		
 		Utils.WriteMessageToChannel("This feature is not yet implemented. Please tell WickedKing to get off his lazy ass and finish it", event.getMessage().getChannel());
 	}
 
@@ -178,7 +187,11 @@ public class BotEventListener {
 	public void onKeyword(KeywordEvent event){
 		boolean isAdmin = Utils.isBotAdmin(event.getMessage().getAuthor().getRolesForGuild(event.getMessage().getGuild()));
 		if(isAdmin){
-			Utils.WriteMessageToChannel("This feature is not yet implemented. Please tell WickedKing to get off his lazy ass and finish it", event.getMessage().getChannel());
+			List<Keywords> keywords = botDAO.getKeywords(event.getMessage().getGuild().getID());
+			for(Keywords keyword : keywords){
+				Utils.WriteMessageToChannel(keyword.toString() ,event.getMessage().getChannel());
+			}
+			//Utils.WriteMessageToChannel("This feature is not yet implemented. Please tell WickedKing to get off his lazy ass and finish it", event.getMessage().getChannel());
 		} else {
 			Utils.WriteMessageToChannel("Not Authorized to use this command", event.getMessage().getChannel());
 		}

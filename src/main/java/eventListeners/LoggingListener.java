@@ -76,7 +76,7 @@ public class LoggingListener {
 	 */
 	@EventSubscriber
 	public void onMessageDelete(MessageDeleteEvent event){
-		Utils.WriteMessageToChannel("`" + timeFormat.format(new Date()) + "` __**" + event.getMessage().getAuthor().getName() + "'s**__ Message: \"" + event.getMessage() + "\" was deleted in __*#" + event.getMessage().getChannel().getName() + "*__", Authorization.client.getChannelByID(loggingChannel));
+		Utils.WriteMessageToChannel("`" + timeFormat.format(new Date()) + "` __**" + event.getMessage().getAuthor().getName() + "'s**__ Message: `" + event.getMessage() + "` was deleted in __*#" + event.getMessage().getChannel().getName() + "*__", Authorization.client.getChannelByID(loggingChannel));
 	}
 
 	/**

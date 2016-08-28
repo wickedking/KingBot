@@ -6,40 +6,37 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
-import bean.Keywords;
+import bean.Keyword;
+import dao.action.DeleteKeywordAction;
+import dao.action.GetAllServerInfoAction;
 import dao.action.GetKeywordsByGuildAction;
-import sx.blah.discord.handle.obj.IGuild;
+import dao.action.GetServerInfoAction;
+import dao.action.PutKeywordAction;
+import details.ServerInfo;
 
-
-//@Configuration
+/**
+ * DAO layer for the action class
+ * @author King
+ *
+ */
 public class BotDAO {
-	
-	private Connection conn;
-	
-	
-	//private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-	
-	//@Autowired
-	public BotDAO(){//NamedParameterJdbcTemplate namedParameterJdbcTemplate){
-		//this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
-//		try {
-//			try {
-//				Class.forName("com.mysql.jdbc.Driver");
-//			} catch (ClassNotFoundException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-			
-			
-		
+
+	/**
+	 * default constructor
+	 */
+	public BotDAO(){
+
 	}
-	
+
+	/**
+	 * returns a new connection for each request
+	 * @return
+	 */
 	private Connection getConnection(){
 		try {
-			conn = DriverManager.getConnection("");
-			System.out.println("connection successful");
-			return conn;
+			return DriverManager.getConnection("");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -47,32 +44,68 @@ public class BotDAO {
 		}
 	}
 	
+	/**
+	 * Get the info for all servers
+	 */
+	public Map<String, ServerInfo> getServersInfo(){
+		GetAllServerInfoAction getAllServerAction = new GetAllServerInfoAction(getConnection());
+		return getAllServerAction.execute();
+
+	}
 	
+	/**
+	 * Get the info for the specifed server
+	 */
+	public ServerInfo getServerInfo(String guildID){
+		GetServerInfoAction getServerAction = new GetServerInfoAction(getConnection());
+		return getServerAction.execute(guildID);
+	}
+
+	/**
+	 * gets the users level
+	 */
 	public void getUserLevel(){
-		
+
 	}
-	
+
+	/**
+	 * TODO
+	 */
 	public void getTopRankings(){
-		
+
 	}
-	
-	public List<Keywords> getKeywords(String guildID){
+
+	/**
+	 * returns all keywords for guild
+	 * @param guildID
+	 * @return
+	 */
+	public List<Keyword> getKeywords(String guildID){
 		GetKeywordsByGuildAction keywordAction = new GetKeywordsByGuildAction(getConnection());
-		System.out.println("$$$$$$$$$$$$$$$$$$");
-		System.out.println(guildID);
 		return keywordAction.execute(guildID);
 	}
-	
-	public void saveKeyword(){
-		
+
+	/**
+	 * Save the created keyword
+	 */
+	public boolean saveKeyword(Keyword keyword){
+		PutKeywordAction keywordAction = new PutKeywordAction(getConnection());
+		return keywordAction.execute(keyword);
 	}
-	
-	public void deleteKeyword(){
-		
+
+	/**
+	 * Delete the specified keyword
+	 */
+	public boolean deleteKeyword(Keyword keyword){
+		DeleteKeywordAction delKeyAction = new DeleteKeywordAction(getConnection());
+		return delKeyAction.execute(keyword);
 	}
-	
+
+	/**
+	 * TODO
+	 */
 	public void updateUserXP(){
-		
+
 	}
 
 }

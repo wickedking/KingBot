@@ -5,12 +5,31 @@ package bean;
  * @author King
  *
  */
-public class Keywords {
+public class Keyword {
 	
+	/**
+	 * The Guild id
+	 */
 	private String guildId;
+	
+	/**
+	 * The keyword
+	 */
 	private String keyword;
+	
+	/**
+	 * The first action
+	 */
 	private String action1;
+	
+	/**
+	 * The second Action
+	 */
 	private String action2;
+	
+	/**
+	 * The Message
+	 */
 	private String message;
 	
 	/**

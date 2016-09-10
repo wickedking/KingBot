@@ -3,6 +3,7 @@ package util;
 import java.util.List;
 import java.util.Map;
 
+import constants.BotConstants;
 import details.ServerInfo;
 import login.Authorization;
 import sx.blah.discord.handle.impl.obj.PrivateChannel;
@@ -102,5 +103,35 @@ public class Utils {
 	public static void  StartupDBBot(){
 		
 		
+	}
+	
+	/**
+	 * validation for keywords, action word 1
+	 * @param action1
+	 * @return
+	 */
+	public static boolean validateAction1(String action1){
+		String[] actions = {BotConstants.KEEP, BotConstants.DELETE};
+		for(String action : actions){
+			if(action1.trim().equals(action)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * validation for keywords, action word 2
+	 * @param action2
+	 * @return
+	 */
+	public static boolean validateAction2(String action2){
+		String[] actions = {BotConstants.STANDALONE, BotConstants.INCLUDED};
+		for(String action : actions){
+			if(action2.trim().equals(action)){
+				return true;
+			}
+		}
+		return false;
 	}
 }

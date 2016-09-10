@@ -2,66 +2,64 @@ package dao.action;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * BROKEN PLEASE FIX
- * TODO
+ * Deletes the logging channel for specified server
  * @author King
  *
  */
-public class GetLevelsForGuildAction {
+public class DeleteLoggingChanAction {
 	
 	/**
 	 * The sql to run
 	 */
 	private String sql;
-	
+
 	/**
 	 * The connection
 	 */
 	private Connection conn;
 	
 	/**
-	 * 
-	 * @param connection The connection
+	 * The constructor
+	 * @param connection
 	 */
-	public GetLevelsForGuildAction(Connection connection){
+	public DeleteLoggingChanAction(Connection connection){
 		conn = connection;
 	}
 	
 	/**
-	 * Creates the Sql needed
+	 * Creates the sql to run
 	 */
-	private void createSQL(){
+	private void createSql(){
 		StringBuilder sb = new StringBuilder();
 		
-		sb.append(" SELECT XP ");
-		sb.append("	FROM T102_rank "); 
-		sb.append("	WHERE "); 
-		sb.append("	T100_guildId = ? ");
-		
+		sb.append(" DELETE ");
+		sb.append(" FROM ");
+		sb.append(" T200_Logging");
+		sb.append(" WHERE ");
+		sb.append(" T100_guildId = ?");
+
 		sql = sb.toString();
 	}
-
+	
 	/**
-	 * Executes the sql and returns the result
-	 * @param guildID
+	 * Executes the sql and return success of sql
+	 * @param keyword
 	 * @return
 	 */
-	public int execute(String userID) {
-		// TODO Auto-generated method stub
-		createSQL();
+	public void execute(String guildId){
+		createSql();
+		System.out.println(sql);
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
-			ps.setString(1, userID);
-			ResultSet rs = ps.executeQuery();
-			return rs.getInt("XP");
+			ps.setString(1, guildId);
+			ps.execute();
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return -1;
 		} finally{
 			try {
 				conn.close();
@@ -73,7 +71,6 @@ public class GetLevelsForGuildAction {
 		
 		
 	}
-	
-	
+
 
 }

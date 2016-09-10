@@ -2,6 +2,8 @@ package details;
 import java.util.ArrayList;
 import java.util.List;
 import bean.Keyword;
+import login.Authorization;
+import sx.blah.discord.util.audio.AudioPlayer;
 
 /**
  * Holds Basic data for each server the bot is in
@@ -9,6 +11,8 @@ import bean.Keyword;
  *
  */
 public class ServerInfo {
+	
+	private AudioPlayer player;
 
 	/**
 	 * The Guild id
@@ -75,6 +79,25 @@ public class ServerInfo {
 	 */
 	public void setKeywords(List<Keyword> keywords) {
 		this.keywords = keywords;
+	}
+
+	/**
+	 * returns an instance of the audio player
+	 * @return
+	 */
+	public AudioPlayer getPlayer() {
+		if(player.equals(null)){
+			player = AudioPlayer.getAudioPlayerForGuild(Authorization.client.getGuildByID(guildId));
+		}		
+		return player;
+	}
+
+	/**
+	 * sets the audio player
+	 * @param player
+	 */
+	public void setPlayer(AudioPlayer player) {
+		this.player = player;
 	}
 	
 }

@@ -6,12 +6,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * BROKEN PLEASE FIX
- * TODO
+ * Get the number of users with higher xp per server
  * @author King
  *
  */
-public class GetLevelsForGuildAction {
+public class GetLevelForUsersAboveAction {
 	
 	/**
 	 * The sql to run
@@ -27,7 +26,7 @@ public class GetLevelsForGuildAction {
 	 * 
 	 * @param connection The connection
 	 */
-	public GetLevelsForGuildAction(Connection connection){
+	public GetLevelForUsersAboveAction(Connection connection){
 		conn = connection;
 	}
 	
@@ -37,10 +36,12 @@ public class GetLevelsForGuildAction {
 	private void createSQL(){
 		StringBuilder sb = new StringBuilder();
 		
-		sb.append(" SELECT XP ");
-		sb.append("	FROM T102_rank "); 
-		sb.append("	WHERE "); 
-		sb.append("	T100_guildId = ? ");
+		
+		sb.append(" SELECT COUNT(*) AS number ");
+		sb.append(" FROM T102_rank ");
+		sb.append(" WHERE ");
+		sb.append(" T100_guildId = ? ");
+		sb.append(" AND xp > ? ");
 		
 		sql = sb.toString();
 	}
@@ -50,14 +51,21 @@ public class GetLevelsForGuildAction {
 	 * @param guildID
 	 * @return
 	 */
-	public int execute(String userID) {
+	public int execute(String guildID, int xp) {
 		// TODO Auto-generated method stub
 		createSQL();
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
-			ps.setString(1, userID);
+			ps.setString(1, guildID);
+			ps.setInt(2, xp);
 			ResultSet rs = ps.executeQuery();
-			return rs.getInt("XP");
+			if(rs.isBeforeFirst()){
+				rs.next();
+				return  rs.getInt("number");
+			} else {
+				return -1;
+			}
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

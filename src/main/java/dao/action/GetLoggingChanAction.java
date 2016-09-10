@@ -6,62 +6,69 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * BROKEN PLEASE FIX
- * TODO
+ * Returns the logging channel for the server
  * @author King
  *
  */
-public class GetLevelsForGuildAction {
+public class GetLoggingChanAction {
 	
 	/**
 	 * The sql to run
 	 */
 	private String sql;
-	
+
 	/**
 	 * The connection
 	 */
 	private Connection conn;
 	
 	/**
-	 * 
-	 * @param connection The connection
+	 * The constructor
+	 * @param connection
 	 */
-	public GetLevelsForGuildAction(Connection connection){
+	public GetLoggingChanAction(Connection connection){
 		conn = connection;
 	}
 	
 	/**
-	 * Creates the Sql needed
+	 * Creates the sql to run
 	 */
-	private void createSQL(){
+	private void createSql(){
 		StringBuilder sb = new StringBuilder();
 		
-		sb.append(" SELECT XP ");
-		sb.append("	FROM T102_rank "); 
-		sb.append("	WHERE "); 
-		sb.append("	T100_guildId = ? ");
-		
+		sb.append(" SELECT ");
+		sb.append(" logging_chan ");
+		sb.append(" FROM ");
+		sb.append(" T200_Logging ");
+		sb.append(" WHERE ");
+		sb.append(" T100_guildId = ? ");
+
 		sql = sb.toString();
 	}
-
+	
 	/**
-	 * Executes the sql and returns the result
-	 * @param guildID
+	 * Executes the sql and return success of sql
+	 * @param keyword
 	 * @return
 	 */
-	public int execute(String userID) {
-		// TODO Auto-generated method stub
-		createSQL();
+	public String execute(String guildId){
+		createSql();
+		System.out.println(sql);
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
-			ps.setString(1, userID);
+			ps.setString(1, guildId);
 			ResultSet rs = ps.executeQuery();
-			return rs.getInt("XP");
+			if(!rs.isBeforeFirst()){
+				return null;
+			} else {
+				rs.next();
+				return rs.getString("logging_chan");
+			}
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return -1;
+			return null;
 		} finally{
 			try {
 				conn.close();
@@ -73,7 +80,6 @@ public class GetLevelsForGuildAction {
 		
 		
 	}
-	
-	
+
 
 }

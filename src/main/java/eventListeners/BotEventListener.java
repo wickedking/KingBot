@@ -1,25 +1,37 @@
 package eventListeners;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 import bean.Keyword;
+import constants.BotConstants;
 import dao.BotDAO;
 import details.ServerInfo;
 import events.BanEvent;
 import events.CommandsEvent;
 import events.DeleteKeywordEvent;
+import events.DeleteLoggingEvent;
+import events.GetLoggingEvent;
 import events.GiveawayEvent;
+import events.HelpEvent;
 import events.KeywordCheckEvent;
 import events.KeywordEvent;
 import events.KickEvent;
 import events.LevelsEvent;
+import events.PlayMusicEvent;
 import events.PruneEvent;
 import events.RankEvent;
 import events.ServerInfoEvent;
 import events.SetKeywordEvent;
+import events.SetLoggingEvent;
 import events.TimeoutEvent;
+import events.XPEvent;
 import login.Authorization;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
@@ -29,6 +41,7 @@ import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.MessageList;
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
+import sx.blah.discord.util.audio.AudioPlayer;
 import util.Utils;
 
 /**
@@ -38,10 +51,24 @@ import util.Utils;
  */
 public class BotEventListener {
 	
-	//@Autowired
+	/**
+	 * Reference to the Dao layer
+	 */
 	private BotDAO botDAO = new BotDAO();
 	
+	/**
+	 * All the servers with the current info
+	 */
 	Map<String, ServerInfo> servers = new HashMap<String, ServerInfo>();
+	
+	/**
+	 * returns the serverinfo the for given server
+	 * @param guildId
+	 * @return ServerInfo
+	 */
+	public ServerInfo getServerInfo(String guildId){
+		return servers.get(guildId);
+	}
 
 	/**
 	 * ReadyEvent listener method
@@ -59,9 +86,15 @@ public class BotEventListener {
 	 */
 	private void setup(){
 		servers = botDAO.getServersInfo();
+		for(ServerInfo server : servers.values()){
+			System.out.println(server.getGuildId());
+			botDAO.getLoggingChannel(server.getGuildId());
+		}
+		
 	}
 	
 	/**
+	 * Refresh the data from the server based on data update
 	 * 
 	 * @param guildID
 	 */
@@ -77,9 +110,9 @@ public class BotEventListener {
 	 */
 	@EventSubscriber
 	public void onMessageReceived(MessageReceivedEvent event){
+		System.out.println(event.getMessage().getAuthor().getID());
 		
-		event.getClient().getDispatcher().dispatch(new KeywordCheckEvent(event.getMessage()));
-		
+		event.getClient().getDispatcher().dispatch(new XPEvent(event.getMessage()));
 		//TODO refactor, please just refactor this
 		if(event.getMessage().getContent().startsWith("`prune")){
 			event.getClient().getDispatcher().dispatch(new PruneEvent(event.getMessage()));
@@ -93,7 +126,7 @@ public class BotEventListener {
 		} else if (event.getMessage().getContent().startsWith("`keywords")) {
 			event.getClient().getDispatcher().dispatch(new KeywordEvent(event.getMessage()));
 
-		} else if (event.getMessage().getContent().startsWith("`timeout")) {
+		} else if (event.getMessage().getContent().startsWith("`timeout ")) {
 			event.getClient().getDispatcher().dispatch(new TimeoutEvent(event.getMessage()));
 
 		} else if (event.getMessage().getContent().startsWith("`giveaway")) {
@@ -102,21 +135,36 @@ public class BotEventListener {
 		} else if (event.getMessage().getContent().startsWith("`commands")) {
 			event.getClient().getDispatcher().dispatch(new CommandsEvent(event.getMessage()));
 
-		} else if (event.getMessage().getContent().startsWith("`kick")) {
+		} else if (event.getMessage().getContent().startsWith("`kick ")) {
 			event.getClient().getDispatcher().dispatch(new KickEvent(event.getMessage()));
 
-		} else if (event.getMessage().getContent().startsWith("`ban")) {
+		} else if (event.getMessage().getContent().startsWith("`ban ")) {
 			event.getClient().getDispatcher().dispatch(new BanEvent(event.getMessage()));
 
 		} else if (event.getMessage().getContent().startsWith("`serverinfo")) {
 			event.getClient().getDispatcher().dispatch(new ServerInfoEvent(event.getMessage()));
 
-		} else if (event.getMessage().getContent().startsWith("`setkeyword")) {
+		} else if (event.getMessage().getContent().startsWith("`setkeyword ")) {
 			event.getClient().getDispatcher().dispatch(new SetKeywordEvent(event.getMessage()));
 			
-		} else if (event.getMessage().getContent().startsWith("`deletekeyword")) {
+		} else if (event.getMessage().getContent().startsWith("`deletekeyword ")) {
 			event.getClient().getDispatcher().dispatch(new DeleteKeywordEvent(event.getMessage()));
-		} 
+			
+		} else if (event.getMessage().getContent().startsWith("`setlogging")) {
+			event.getClient().getDispatcher().dispatch(new SetLoggingEvent(event.getMessage()));
+			
+		} else if (event.getMessage().getContent().startsWith("`deletelogging")) {
+			event.getClient().getDispatcher().dispatch(new DeleteLoggingEvent(event.getMessage()));
+			
+		} else if (event.getMessage().getContent().startsWith("`getlogging")) {
+			event.getClient().getDispatcher().dispatch(new GetLoggingEvent(event.getMessage()));
+			
+		} else if (event.getMessage().getContent().startsWith("`playmusic")) {
+			event.getClient().getDispatcher().dispatch(new PlayMusicEvent(event.getMessage()));
+			
+		} else {
+			event.getClient().getDispatcher().dispatch(new KeywordCheckEvent(event.getMessage()));
+		}
 
 	}
 
@@ -168,7 +216,7 @@ public class BotEventListener {
 	 */
 	@EventSubscriber
 	public void onCommands(CommandsEvent event){
-		String commands = "````ban - Bans the person tagged \n `commands - Lists the commands \n `giveaway - Starts a giveaway, i think. idk yet \n `keyword - Lists the current keyword filters \n `kick - Kicks the person from the server \n `levels - Shows a link to the website with all the levels \n `prune - Deletes the last 'X' messages \n `rank - Shows your current rank \n `timeout - Removes the ability to type or talk from the person \n `serverinfo - Shows basic info about the server```";
+		String commands = BotConstants.HELP_MESSAGE;
 		Utils.WriteMessageToChannel(event.getMessage().getAuthor().mention() + commands, event.getMessage().getChannel());
 	}
 
@@ -236,7 +284,8 @@ public class BotEventListener {
 	 */
 	@EventSubscriber
 	public void onRank(RankEvent event){
-		Utils.WriteMessageToChannel("This feature is not yet implemented. Please tell WickedKing to get off his lazy ass and finish it", event.getMessage().getChannel());
+		String xp = botDAO.getXPForUser(event.getMessage().getGuild().getID(), event.getMessage().getAuthor().getID());
+		Utils.WriteMessageToChannel(xp, event.getMessage().getChannel());
 	}
 
 	/**
@@ -265,25 +314,28 @@ public class BotEventListener {
 	 */
 	@EventSubscriber
 	public void onGetKeywords(KeywordEvent event){
-		
-		//TODO refactor to replace db call with call to Servers
+
 		boolean isAdmin = Utils.isBotAdmin(event.getMessage().getAuthor().getRolesForGuild(event.getMessage().getGuild()));
 		if(isAdmin){
 			List<Keyword> keywords = botDAO.getKeywords(event.getMessage().getGuild().getID());
-			StringBuilder sb = new StringBuilder();
-			for(Keyword keyword : keywords){
-				sb.append("**Keyword:** " + keyword.getKeyword());
-				sb.append(" | **Action1:** " + keyword.getAction1());
-				sb.append(" | **Action2:** " + keyword.getAction2()); 
-				sb.append(" | **Message:** " + keyword.getMessage());
-				sb.append(" \n");
-				
+			if(keywords.size() > 0){
+				StringBuilder sb = new StringBuilder();
+				for(Keyword keyword : keywords){
+					sb.append("**Keyword:** " + keyword.getKeyword());
+					sb.append(" | **Action1:** " + keyword.getAction1());
+					sb.append(" | **Action2:** " + keyword.getAction2()); 
+					sb.append(" | **Message:** " + keyword.getMessage());
+					sb.append(" \n");
+
+				}
+				Utils.WriteMessageToChannel(sb.toString(), event.getMessage().getChannel());
+			} else {
+				Utils.WriteMessageToChannel("No keywords are set for this server", event.getMessage().getChannel());
 			}
-			Utils.WriteMessageToChannel(sb.toString(), event.getMessage().getChannel());
 		} else {
 			Utils.WriteMessageToChannel("Not Authorized to use this command", event.getMessage().getChannel());
 		}
-		
+
 	}
 
 	/**
@@ -305,18 +357,40 @@ public class BotEventListener {
 			keyword.setAction1(words[2].trim());
 			keyword.setAction2(words[3].trim());
 			keyword.setMessage(words[4].trim());
-			boolean success =  botDAO.saveKeyword(keyword);
-			if(success){
-				Utils.WriteMessageToChannel("Keyword: " + keyword.getKeyword() + " was saved successfully", Authorization.client.getChannelByID(event.getMessage().getChannel().getID()));
-				resetServerInfo(event.getMessage().getGuild().getID());
+			if(validateKeyword(keyword)){
+				boolean success =  botDAO.saveKeyword(keyword);
+				if(success){
+					Utils.WriteMessageToChannel("Keyword: " + keyword.getKeyword() + " was saved successfully", Authorization.client.getChannelByID(event.getMessage().getChannel().getID()));
+					resetServerInfo(event.getMessage().getGuild().getID());
+				} else {
+					Utils.WriteMessageToChannel("Your keyword attempt was not saved successfully", Authorization.client.getChannelByID(event.getMessage().getChannel().getID()));
+				}
 			} else {
-				Utils.WriteMessageToChannel("Your keyword attempt was not saved successfully", Authorization.client.getChannelByID(event.getMessage().getChannel().getID()));
+				Utils.WriteMessageToChannel("That keyword command is not correct. Please correct and try again", Authorization.client.getChannelByID(event.getMessage().getChannel().getID()));
 			}
+			
 		} else{
 			Utils.WriteMessageToChannel("Not Authorized to use this command", event.getMessage().getChannel());
 		}
 		
+	}
+	
+	/**
+	 * validates the keyword created
+	 * @param keyword
+	 */
+	private boolean validateKeyword(Keyword keyword){
+		String action1 = keyword.getAction1();
+		String action2 = keyword.getAction2();
+		boolean action1Success = Utils.validateAction1(action1);
+		boolean action2Success = Utils.validateAction2(action2);
 		
+		if(action1Success && action2Success){
+			return true;
+			//TODO is this what i want to do here?
+		} else {
+			return false;
+		}
 	}
 	
 	/**
@@ -354,11 +428,129 @@ public class BotEventListener {
 		String message = event.getMessage().getContent();
 		for(Keyword keyword : server.getKeywords()){
 			if(message.toLowerCase().contains(keyword.getKeyword().toLowerCase())){
-				Utils.WriteMessageToChannel("The Keyword: " + keyword.getKeyword() + " was found in the message", Authorization.client.getChannelByID(event.getMessage().getChannel().getID()));
+				evaluateMessage(keyword, event);
 				return;
 			}
 		}
 	}
+	
+	/**
+	 * Evaluates the message according to the keyword rules
+	 * @param keyword
+	 * @param event
+	 */
+	private void evaluateMessage(Keyword keyword, KeywordCheckEvent event){
+		if(keyword.getAction2().equals(BotConstants.INCLUDED)){
+			if(keyword.getAction1().equals(BotConstants.DELETE)){
+				try {
+					event.getMessage().delete();
+					if(keyword.getMessage().equals(BotConstants.NOTHING)){
+						//do nothing i guess?
+					} else {
+						Utils.WriteMessageToChannel(keyword.getMessage(), event.getMessage().getChannel());
+					}
+				} catch (RateLimitException | MissingPermissionsException | DiscordException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			} else if (keyword.getAction1().equals(BotConstants.KEEP)){
+				if(keyword.getMessage().equals(BotConstants.NOTHING)){
+					//do nothing i guess?
+				} else {
+					Utils.WriteMessageToChannel(keyword.getMessage(), event.getMessage().getChannel());
+				}
+			}
+
+		} else if (keyword.getAction2().equals(BotConstants.STANDALONE)){
+			String message = " " + keyword.getKeyword() + " ";
+			if(event.getMessage().getContent().contains(message)){
+				if(keyword.getAction1().equals(BotConstants.DELETE)){
+					try {
+						event.getMessage().delete();
+						if(keyword.getMessage().equals(BotConstants.NOTHING)){
+							//do nothing i guess?
+						} else {
+							Utils.WriteMessageToChannel(keyword.getMessage(), event.getMessage().getChannel());
+						}
+					} catch (RateLimitException | MissingPermissionsException | DiscordException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+				} else if (keyword.getAction1().equals(BotConstants.KEEP)){
+					if(keyword.getMessage().equals(BotConstants.NOTHING)){
+						//do nothing i guess?
+					} else {
+						Utils.WriteMessageToChannel(keyword.getMessage(), event.getMessage().getChannel());
+					}
+				}
+			} else {
+				return;
+			}
+			
+		} else {
+			System.out.println("hmm something happened");
+		}
+	}
+	
+	/**
+	 * Updates the xp of the user
+	 * @param event
+	 */
+	@EventSubscriber
+	public void onXP(XPEvent event){
+		Random rand = new Random();
+		botDAO.updateUserXP(event.getMessage().getGuild().getID(), event.getMessage().getAuthor().getID(), rand.nextInt(11) + 20);
+	}
+	
+	/**
+	 * Delete the logging channel saved
+	 * @param event
+	 */
+	@EventSubscriber
+	public void onDeleteLogging(DeleteLoggingEvent event){
+		botDAO.deleteLoggingChannel(event.getMessage().getGuild().getID());
+		Utils.WriteMessageToChannel("Logging will no longer occur", event.getMessage().getChannel());
+	}
+	
+	/**
+	 * Sets the Logging channel
+	 * @param event
+	 */
+	@EventSubscriber
+	public void onSetLogging(SetLoggingEvent event){
+		botDAO.setLoggingChannel(event.getMessage().getGuild().getID(), event.getMessage().getChannel().getID());
+		Utils.WriteMessageToChannel("Logging has been set to this channel", event.getMessage().getChannel());
+	}
+	
+	/**
+	 * Returns teh logging channel
+	 * @param event
+	 */
+	@EventSubscriber
+	public void onGetLogging(GetLoggingEvent event){
+		botDAO.getLoggingChannel(event.getMessage().getGuild().getID());
+		
+	}
+	
+	/**
+	 * Plays music
+	 * TODO fix
+	 * @param event
+	 */
+	@EventSubscriber
+	public void onPlayMusic(PlayMusicEvent event){
+		AudioPlayer player = AudioPlayer.getAudioPlayerForGuild(event.getMessage().getGuild());
+		try {
+			player.queue(new URL("https://www.youtube.com/watch?v=308KpFZ4cT8"));
+			System.out.println("Playing music maybe");
+		} catch (IOException | UnsupportedAudioFileException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 
 
 }

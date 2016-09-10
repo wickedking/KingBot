@@ -23,10 +23,18 @@ import sx.blah.discord.handle.impl.events.UserRoleUpdateEvent;
 import sx.blah.discord.handle.impl.events.UserUpdateEvent;
 import util.Utils;
 
+/**
+ * The event listener for logging events
+ * @author King
+ *
+ */
 public class LoggingListener {
+
+	BotEventListener botListener;
 
 	/**
 	 * Static Channel Id for the loggingChannel. Will remove in future update
+	 * TODO
 	 */
 	private static String loggingChannel = "216018960531980298";
 
@@ -36,12 +44,21 @@ public class LoggingListener {
 	private static SimpleDateFormat timeFormat = new SimpleDateFormat("KK:mm:ss z");
 
 	/**
+	 * Default constructor 
+	 * @param listener
+	 */
+	public LoggingListener(BotEventListener listener){
+		botListener = listener;
+	}
+
+	/**
 	 * Logs message when a new Channel is created
 	 * @param event
 	 */
 	@EventSubscriber
 	public void onChannelCreate(ChannelCreateEvent event){
-		Utils.WriteMessageToChannel("`" + timeFormat.format(new Date()) + "`" + " The channel **#" + event.getChannel().getName() + "** was created.", Authorization.client.getChannelByID(loggingChannel));
+
+		Utils.WriteMessageToChannel("`" + timeFormat.format(new Date()) + "`" + " The channel **#" + event.getChannel().getName() + "** was created.", event.getChannel().getGuild().getChannelByID((botListener.getServerInfo(event.getChannel().getGuild().getID()).getLoggingChannelId())));
 
 	}
 
@@ -51,7 +68,7 @@ public class LoggingListener {
 	 */
 	@EventSubscriber
 	public void onChannelDelete(ChannelDeleteEvent event){
-		Utils.WriteMessageToChannel("`" + timeFormat.format(new Date()) + "`" + " The channel **#" + event.getChannel().getName() + "** was created.", Authorization.client.getChannelByID(loggingChannel));
+		Utils.WriteMessageToChannel("`" + timeFormat.format(new Date()) + "`" + " The channel **#" + event.getChannel().getName() + "** was d.", Authorization.client.getChannelByID(loggingChannel));
 	}
 
 	/**
@@ -87,7 +104,7 @@ public class LoggingListener {
 	public void onMessagePin(MessagePinEvent event){
 		Utils.WriteMessageToChannel("`" + timeFormat.format(new Date()) + "` __**" + event.getMessage().getAuthor().getName() + "**__ Message: " + event.getMessage() + " was pinned in channel: __*#" + event.getChannel().getName() + "*__",  Authorization.client.getChannelByID(loggingChannel));
 	}
-	
+
 	/**
 	 * Logs message when a message is updated
 	 * @param event
@@ -106,7 +123,7 @@ public class LoggingListener {
 		Utils.WriteMessageToChannel("`" + timeFormat.format(new Date()) + "`" + " Role: " + event.getRole() + " has been created.", Authorization.client.getChannelByID(loggingChannel));
 		//TODO fix 
 	}
-	
+
 	/**
 	 * Logs message when a role is deleted
 	 * @param event
@@ -180,7 +197,7 @@ public class LoggingListener {
 		//TODO fix
 		//new MessageBuilder(Authorization.client).withChannel(loggingChannel).withContent(event.getOldUser(). + event.getNewUser()).build();
 	}
-	
+
 	/**
 	 * Logs message when somebody starts playing WoW
 	 * @param event
@@ -190,8 +207,8 @@ public class LoggingListener {
 		if(event.getNewStatus().getStatusMessage().toLowerCase().contains("world of warcraft")){
 			Utils.WriteMessageToChannel("QUIT PLAYING WoW!!!! " + event.getUser().mention(), Authorization.client.getChannelByID(loggingChannel));
 		}
-		
-		
+
+
 	}
 
 }

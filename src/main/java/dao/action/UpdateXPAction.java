@@ -5,13 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
-import java.sql.Timestamp;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-
-import bean.Keyword;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Updates the xp of the user
@@ -19,6 +15,9 @@ import bean.Keyword;
  *
  */
 public class UpdateXPAction {
+	
+	
+	private static final Logger logger = LogManager.getLogger(UpdateXPAction.class);
 	
 	/**
 	 * The sql to run
@@ -91,15 +90,15 @@ public class UpdateXPAction {
 		sb.append(" ? ");
 		sb.append(" )");
 		
-		
 		sql3 = sb.toString();
-		System.out.println(sql3);
 	}
 	
 	/**
 	 * Executes the sql and return success of sql
-	 * @param keyword
-	 * @return
+	 * @param guildId
+	 * @param userId
+	 * @param xp
+	 * @return is successful
 	 */
 	public boolean execute(String guildId, String userId, int xp){
 		createSql();
@@ -116,40 +115,39 @@ public class UpdateXPAction {
 				ps3.setString(2, userId);
 				ps3.setInt(3, xp);
 				ps3.execute();
+				ps3.close();
 			} else {
 				rs.next();
-				Calendar cal = Calendar.getInstance();
 				Time time = rs.getTime("update_time");
 				LocalTime lt = time.toLocalTime();
 				LocalTime now = LocalTime.now();
 				lt = lt.plusMinutes(1l);
 				lt = lt.plusHours(1l);
-				System.out.println(lt);
-				System.out.println(now);
+				logger.warn(lt);
+				logger.warn(now);
 				if(now.isAfter(lt)){
-					System.out.println("updated xp");
+					logger.warn("updated xp");
 					int tableXp = rs.getInt("xp");
 					PreparedStatement ps2 = conn.prepareStatement(sql2);
 					ps2.setInt(1, tableXp + xp);
 					ps2.setString(2, userId);
 					ps2.setString(3, guildId);
 					ps2.executeUpdate();
+					ps2.close();
 				}
 
 			}
-			
+			ps.close();
 			return true;
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e);
 			return false;
 		} finally{
 			try {
 				conn.close();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(e);
 			}
 		}
 		

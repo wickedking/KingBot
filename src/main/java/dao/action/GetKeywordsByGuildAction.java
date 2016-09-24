@@ -7,6 +7,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import bean.Keyword;
 
 /**
@@ -15,6 +18,8 @@ import bean.Keyword;
  *
  */
 public class GetKeywordsByGuildAction {
+	
+	private static final Logger logger = LogManager.getLogger(GetKeywordsByGuildAction.class);
 	
 	/**
 	 * The sql to run
@@ -53,13 +58,12 @@ public class GetKeywordsByGuildAction {
 	 * @return
 	 */
 	public List<Keyword> execute(String guildID) {
-		// TODO Auto-generated method stub
 		createSQL();
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, guildID);
 			ResultSet rs = ps.executeQuery();
-			List<Keyword> keywords = new ArrayList<Keyword>();
+			List<Keyword> keywords = new ArrayList<>();
 			
 			while(rs.next()){
 				Keyword keyword = new Keyword();
@@ -71,17 +75,16 @@ public class GetKeywordsByGuildAction {
 				keywords.add(keyword);
 			}
 			
+			ps.close();
 			return keywords;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return new ArrayList<Keyword>();
+			logger.error(e);
+			return new ArrayList<>();
 		} finally{
 			try {
 				conn.close();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(e);
 			}
 		}
 		

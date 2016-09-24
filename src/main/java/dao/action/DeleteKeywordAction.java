@@ -2,10 +2,10 @@ package dao.action;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import bean.Keyword;
 
@@ -15,6 +15,8 @@ import bean.Keyword;
  *
  */
 public class DeleteKeywordAction {
+	
+	private static final Logger logger = LogManager.getLogger(DeleteKeywordAction.class);
 	
 	/**
 	 * The sql to run
@@ -60,18 +62,17 @@ public class DeleteKeywordAction {
 			ps.setString(1, keyword.getGuildId());
 			ps.setString(2, keyword.getKeyword());
 			ps.execute();
+			ps.close();
 			return true;
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.warn(e);
 			return false;
 		} finally{
 			try {
 				conn.close();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.warn(e);
 			}
 		}
 		

@@ -6,6 +6,9 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import bean.Keyword;
 import dao.action.DeleteKeywordAction;
 import dao.action.DeleteLoggingChanAction;
@@ -21,7 +24,6 @@ import dao.action.PutKeywordAction;
 import dao.action.UpdateXPAction;
 import details.ServerInfo;
 import hidden.HiddenConstants;
-import sx.blah.discord.handle.obj.IGuild;
 
 /**
  * DAO layer for the action class
@@ -29,12 +31,14 @@ import sx.blah.discord.handle.obj.IGuild;
  *
  */
 public class BotDAO {
+	
+	private static final Logger logger = LogManager.getLogger(BotDAO.class);
 
 	/**
 	 * default constructor
 	 */
 	public BotDAO(){
-
+		//default constructor. no setup needed
 	}
 
 	/**
@@ -45,8 +49,7 @@ public class BotDAO {
 		try {
 			return DriverManager.getConnection(HiddenConstants.SQLLOGIN);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e);
 			return null;
 		}
 	}
@@ -63,6 +66,7 @@ public class BotDAO {
 	/**
 	 * Get the info for the specifed server
 	 * @param guildID
+	 * @return ServerInfo The info for the given server
 	 */
 	public ServerInfo getServerInfo(String guildID){
 		GetServerInfoAction getServerAction = new GetServerInfoAction(getConnection());
@@ -73,14 +77,14 @@ public class BotDAO {
 	 * gets the users level
 	 */
 	public void getUserLevel(){
-
+		//TODO implement
 	}
 
 	/**
 	 * TODO
 	 */
 	public void getTopRankings(){
-
+		//TODO implement
 	}
 
 	/**
@@ -132,10 +136,11 @@ public class BotDAO {
 	 * 
 	 * @param guildId
 	 * @param channelId
+	 * @return boolean if successful
 	 */
-	public void setLoggingChannel(String guildId, String channelId){
+	public boolean setLoggingChannel(String guildId, String channelId){
 		InsertLoggingChanAction loggingAction = new InsertLoggingChanAction(getConnection());
-		loggingAction.execute(guildId, channelId);
+		return loggingAction.execute(guildId, channelId);
 	}
 	
 	/**
@@ -162,6 +167,7 @@ public class BotDAO {
 	/**
 	 * Returns the xp for the given user in the given server
 	 * 
+	 * @param guildId the guildId
 	 * @param userId
 	 * @return
 	 */
@@ -171,7 +177,7 @@ public class BotDAO {
 		GetLevelForUsersAboveAction getLevelAboveAction = new GetLevelForUsersAboveAction(getConnection());
 		int countAbove = getLevelAboveAction.execute(guildId, xp) + 1;
 		GetLevelForUsersBelowAction getLevelBelowAction = new GetLevelForUsersBelowAction(getConnection());
-		int totalCount = getLevelBelowAction.execute(guildId, xp);
+		int totalCount = getLevelBelowAction.execute(guildId);
 		
 		if(xp == -1 || countAbove == -1 || totalCount == -1){
 			return "XP check failed";

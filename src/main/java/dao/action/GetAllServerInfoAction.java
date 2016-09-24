@@ -8,7 +8,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import bean.Keyword;
+import constants.BotConstants;
 import details.ServerInfo;
 
 /**
@@ -17,6 +21,8 @@ import details.ServerInfo;
  *
  */
 public class GetAllServerInfoAction {
+	
+	private static final Logger logger = LogManager.getLogger(GetAllServerInfoAction.class);
 	
 	/**
 	 * The Sql to run
@@ -67,14 +73,14 @@ public class GetAllServerInfoAction {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 
-			HashMap<String, ServerInfo> servers = new HashMap<String, ServerInfo>();
+			HashMap<String, ServerInfo> servers = new HashMap<>();
 			while(rs.next()){
 				ServerInfo server;
-				if(servers.containsKey(rs.getString("T100_guildId"))){
-					server = servers.get(rs.getString("T100_guildId"));
+				if(servers.containsKey(rs.getString(BotConstants.GUILD_ID))){
+					server = servers.get(rs.getString(BotConstants.GUILD_ID));
 				} else {
 					server = new ServerInfo();
-					server.setGuildId(rs.getString("T100_guildId"));
+					server.setGuildId(rs.getString(BotConstants.GUILD_ID));
 				}
 				Keyword keyword = new Keyword();
 				keyword.setKeyword(rs.getString("keyword"));
@@ -88,16 +94,17 @@ public class GetAllServerInfoAction {
 				servers.put(server.getGuildId(), server);
 			}
 			
+			ps.close();
 			return servers;
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error(e);
 			return null;
 		} finally{
 			try {
 				conn.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				logger.error(e);
 			}
 		}
 		

@@ -3,6 +3,10 @@ package dao.action;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import bean.Keyword;
 
 /**
@@ -11,6 +15,8 @@ import bean.Keyword;
  *
  */
 public class PutKeywordAction {
+	
+	private static final Logger logger = LogManager.getLogger(PutKeywordAction.class);
 	
 	/**
 	 * The sql to run
@@ -52,16 +58,15 @@ public class PutKeywordAction {
 		sb.append(" ) ");
 		
 		sql = sb.toString();
-		System.out.println(sql);
+		logger.warn(sql);
 	}
 
 	/**
 	 * Executes the sql and returns the result
-	 * @param guildID
-	 * @return
+	 * @param keyword
+	 * @return is successful
 	 */
 	public boolean execute(Keyword keyword) {
-		// TODO Auto-generated method stub
 		createSQL();
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
@@ -71,17 +76,16 @@ public class PutKeywordAction {
 			ps.setString(4, keyword.getAction2());
 			ps.setString(5, keyword.getMessage());
 			ps.execute();
+			ps.close();
 			return true;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e);
 			return false;
 		} finally{
 			try {
 				conn.close();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(e);
 			}
 		}
 		

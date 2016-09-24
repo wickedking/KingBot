@@ -5,12 +5,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * Returns the xp rank for the user 
  * @author King
  *
  */
 public class GetRankForUserAction {
+	
+	private static final Logger logger = LogManager.getLogger(GetRankForUserAction.class);
 	
 	/**
 	 * The sql to run
@@ -51,29 +56,28 @@ public class GetRankForUserAction {
 	 * @return the xp of the user
 	 */
 	public int execute(String userID) {
-		// TODO Auto-generated method stub
 		createSQL();
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, userID);
 			ResultSet rs = ps.executeQuery();
+			int result = -1;
 			if(rs.isBeforeFirst()){
 				rs.next();
-				return rs.getInt("XP");
-			} else {
-				return -1;
-			}
+				result = rs.getInt("XP");
+			} 
+			
+			ps.close();
+			return result;
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e);
 			return -1;
 		} finally{
 			try {
 				conn.close();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(e);
 			}
 		}
 		

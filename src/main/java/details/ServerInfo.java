@@ -67,7 +67,7 @@ public class ServerInfo {
 	 */
 	public List<Keyword> getKeywords() {
 		if(keywords == null){
-			return new ArrayList<Keyword>();
+			return new ArrayList<>();
 		} 
 		return keywords;
 		
@@ -86,7 +86,7 @@ public class ServerInfo {
 	 * @return
 	 */
 	public AudioPlayer getPlayer() {
-		if(player.equals(null)){
+		if(player == null){
 			player = AudioPlayer.getAudioPlayerForGuild(Authorization.client.getGuildByID(guildId));
 		}		
 		return player;

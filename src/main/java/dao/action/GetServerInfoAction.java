@@ -7,6 +7,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import bean.Keyword;
 import details.ServerInfo;
 
@@ -16,6 +19,8 @@ import details.ServerInfo;
  *
  */
 public class GetServerInfoAction {
+	
+	private static final Logger logger = LogManager.getLogger(GetServerInfoAction.class);
 	
 	/**
 	 * The Sql to run
@@ -69,7 +74,7 @@ public class GetServerInfoAction {
 			ResultSet rs = ps.executeQuery();
 			ServerInfo server = new ServerInfo();
 			server.setGuildId(guildId);
-			List<Keyword> keywords = new ArrayList<Keyword>();
+			List<Keyword> keywords = new ArrayList<>();
 			
 			while(rs.next()){
 				Keyword keyword = new Keyword();
@@ -80,16 +85,17 @@ public class GetServerInfoAction {
 				keywords.add(keyword);
 			}
 			server.setKeywords(keywords);
+			ps.close();
 			return server;
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error(e);
 			return null;
 		} finally{
 			try {
 				conn.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				logger.error(e);
 			}
 		}
 		

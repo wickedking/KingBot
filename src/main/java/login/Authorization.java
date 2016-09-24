@@ -3,6 +3,9 @@
  */
 package login;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import eventListeners.BotEventListener;
 import eventListeners.LoggingListener;
 import hidden.HiddenConstants;
@@ -19,15 +22,16 @@ import sx.blah.discord.util.DiscordException;
 //@SpringBootApplication
 public class Authorization {
 
+	private static final Logger logger = LogManager.getLogger(Authorization.class);
+	
 	/**
 	 * A static reference to the DiscordClient Object
 	 */
-	public static IDiscordClient client;
+	public static IDiscordClient client;	
 	
-	/**
-	 * A status for when the bot is logged in and ready
-	 */
-	public static boolean readyStatus = false;
+	private Authorization(){
+		//empty constructor
+	}
 	
 	/**
 	 * Da Main method yo
@@ -35,13 +39,14 @@ public class Authorization {
 	 * @throws DiscordException
 	 */
 	public static void main(String[] args) throws DiscordException {
-		System.out.println("Hello World");
-		//SpringApplication.run(Authorization.class, args);
+		logger.warn("Hello World");
 		client = new ClientBuilder().withToken(HiddenConstants.BOTTOKEN).login();
 		BotEventListener listener = new BotEventListener();
 		client.getDispatcher().registerListener(listener);
 		client.getDispatcher().registerListener(new LoggingListener(listener));
 	
 	}
+	
+	
 
 }

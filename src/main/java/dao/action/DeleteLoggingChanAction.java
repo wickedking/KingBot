@@ -4,12 +4,17 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * Deletes the logging channel for specified server
  * @author King
  *
  */
 public class DeleteLoggingChanAction {
+	
+	private static final Logger logger = LogManager.getLogger(DeleteLoggingChanAction.class);
 	
 	/**
 	 * The sql to run
@@ -46,26 +51,23 @@ public class DeleteLoggingChanAction {
 	
 	/**
 	 * Executes the sql and return success of sql
-	 * @param keyword
-	 * @return
+	 * @param guildId The guildId
 	 */
 	public void execute(String guildId){
 		createSql();
-		System.out.println(sql);
+		logger.warn(sql);
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, guildId);
 			ps.execute();
-			
+			ps.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e);
 		} finally{
 			try {
 				conn.close();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(e);
 			}
 		}
 		

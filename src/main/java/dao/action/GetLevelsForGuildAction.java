@@ -5,6 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * BROKEN PLEASE FIX
  * TODO
@@ -12,6 +15,8 @@ import java.sql.SQLException;
  *
  */
 public class GetLevelsForGuildAction {
+	
+	private static final Logger logger = LogManager.getLogger(GetLevelForUsersBelowAction.class);
 	
 	/**
 	 * The sql to run
@@ -47,27 +52,26 @@ public class GetLevelsForGuildAction {
 
 	/**
 	 * Executes the sql and returns the result
-	 * @param guildID
+	 * @param userID
 	 * @return
 	 */
 	public int execute(String userID) {
-		// TODO Auto-generated method stub
 		createSQL();
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, userID);
 			ResultSet rs = ps.executeQuery();
-			return rs.getInt("XP");
+			int result = rs.getInt("XP");
+			ps.close();
+			return result;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e);
 			return -1;
 		} finally{
 			try {
 				conn.close();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(e);
 			}
 		}
 		

@@ -3,8 +3,10 @@ package util;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import constants.BotConstants;
-import details.ServerInfo;
 import login.Authorization;
 import sx.blah.discord.handle.impl.obj.PrivateChannel;
 import sx.blah.discord.handle.obj.IChannel;
@@ -23,7 +25,7 @@ import sx.blah.discord.util.RequestBuffer;
  */
 public class Utils {
 	
-	private static String guildId = "215588890382303234";
+	private static final Logger logger = LogManager.getLogger(Utils.class);
 	
 	/**
 	 * Role for admin for the bot
@@ -34,7 +36,7 @@ public class Utils {
 	 * Used to save user created Keywords
 	 */
 	public void saveKeywords() {
-
+		//TODO implement
 	}
 
 	/**
@@ -51,7 +53,7 @@ public class Utils {
 	 * @param message
 	 * @param channel
 	 */
-	public static void WriteMessageToChannel(String message, IChannel channel){
+	public static void writeMessageToChannel(String message, IChannel channel){
 		//edit message to remove the actual mentions so logging doesnt mention people
 		RequestBuffer.request(() -> {
 			MessageBuilder builder = new MessageBuilder(Authorization.client).withContent(message);
@@ -59,8 +61,7 @@ public class Utils {
 			try {
 				builder.build();
 			} catch (DiscordException | MissingPermissionsException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(e);
 			}
 
 		});
@@ -72,13 +73,12 @@ public class Utils {
 	 * @param user
 	 * @param message
 	 */
-	public static void PrivateMessageUser(IUser user, String message){
+	public static void privateMessageUser(IUser user, String message){
 		PrivateChannel dm = new PrivateChannel(Authorization.client, user, message);
 		try {
 			dm.sendMessage("blargh");
 		} catch (RateLimitException | MissingPermissionsException | DiscordException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e);
 		}
 	}
 	
@@ -100,8 +100,8 @@ public class Utils {
 	 * Initialize database, return mapping info
 	 * @return
 	 */
-	public static void  StartupDBBot(){
-		
+	public static void  startupDBBot(){
+		//TODO implement?
 		
 	}
 	

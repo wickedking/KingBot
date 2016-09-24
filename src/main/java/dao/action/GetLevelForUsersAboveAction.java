@@ -5,12 +5,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * Get the number of users with higher xp per server
  * @author King
  *
  */
 public class GetLevelForUsersAboveAction {
+	
+	private static final Logger logger = LogManager.getLogger(GetLevelForUsersAboveAction.class);
 	
 	/**
 	 * The sql to run
@@ -49,33 +54,33 @@ public class GetLevelForUsersAboveAction {
 	/**
 	 * Executes the sql and returns the result
 	 * @param guildID
-	 * @return
+	 * @param xp 
+	 * @return the number of users above
 	 */
 	public int execute(String guildID, int xp) {
-		// TODO Auto-generated method stub
 		createSQL();
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, guildID);
 			ps.setInt(2, xp);
 			ResultSet rs = ps.executeQuery();
+			int result = -1;
 			if(rs.isBeforeFirst()){
 				rs.next();
-				return  rs.getInt("number");
-			} else {
-				return -1;
+				result = rs.getInt("number");
 			}
 			
+			ps.close();
+			return result;
+			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e);
 			return -1;
 		} finally{
 			try {
 				conn.close();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(e);
 			}
 		}
 		

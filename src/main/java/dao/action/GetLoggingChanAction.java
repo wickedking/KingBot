@@ -5,12 +5,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * Returns the logging channel for the server
  * @author King
  *
  */
 public class GetLoggingChanAction {
+	
+	private static final Logger logger = LogManager.getLogger(GetLoggingChanAction.class);
 	
 	/**
 	 * The sql to run
@@ -48,33 +53,33 @@ public class GetLoggingChanAction {
 	
 	/**
 	 * Executes the sql and return success of sql
-	 * @param keyword
-	 * @return
+	 * @param guildId
+	 * @return the logging channel
 	 */
 	public String execute(String guildId){
 		createSql();
-		System.out.println(sql);
+		logger.warn(sql);
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, guildId);
 			ResultSet rs = ps.executeQuery();
-			if(!rs.isBeforeFirst()){
-				return null;
-			} else {
+			String result = null;
+			if(rs.isBeforeFirst()){
 				rs.next();
-				return rs.getString("logging_chan");
+				result = rs.getString("logging_chan");
 			}
 			
+			ps.close();
+			return result;
+			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e);
 			return null;
 		} finally{
 			try {
 				conn.close();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(e);
 			}
 		}
 		

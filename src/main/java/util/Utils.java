@@ -30,7 +30,9 @@ public class Utils {
 	/**
 	 * Role for admin for the bot
 	 */
-	private static String botAdmin = "Bot Admin";
+	private static String botAdmin = "Admin";
+	
+	private static String botMod = "Mod";
 
 	/**
 	 * Used to save user created Keywords
@@ -89,7 +91,7 @@ public class Utils {
 	 */
 	public static boolean isBotAdmin(List<IRole> roles){
 		for(IRole role : roles){
-			if(role.getName().equals(botAdmin)){
+			if(role.getName().equals(botAdmin) || role.getName().equals(botMod)){
 				return true;
 			}
 		}

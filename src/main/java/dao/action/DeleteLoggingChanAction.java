@@ -53,16 +53,22 @@ public class DeleteLoggingChanAction {
 	 * Executes the sql and return success of sql
 	 * @param guildId The guildId
 	 */
-	public void execute(String guildId){
+	public boolean execute(String guildId){
 		createSql();
 		logger.warn(sql);
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, guildId);
-			ps.execute();
+			int rows = ps.executeUpdate();
 			ps.close();
+			if(rows > 0){
+				return true;
+			} else {
+				return false;
+			}
 		} catch (SQLException e) {
 			logger.error(e);
+			return false;
 		} finally{
 			try {
 				conn.close();

@@ -64,7 +64,7 @@ public class BotDAO {
 	}
 	
 	/**
-	 * Get the info for the specifed server
+	 * Get the info for the specified server
 	 * @param guildID
 	 * @return ServerInfo The info for the given server
 	 */
@@ -159,9 +159,9 @@ public class BotDAO {
 	 * 
 	 * @param guildId
 	 */
-	public void deleteLoggingChannel(String guildId){
+	public boolean deleteLoggingChannel(String guildId){
 		DeleteLoggingChanAction loggingAction = new DeleteLoggingChanAction(getConnection());
-		loggingAction.execute(guildId);
+		return loggingAction.execute(guildId);
 	}
 
 	/**

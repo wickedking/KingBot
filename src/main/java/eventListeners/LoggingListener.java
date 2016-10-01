@@ -43,7 +43,7 @@ public class LoggingListener {
 	 * Static Channel Id for the loggingChannel. Will remove in future update
 	 * TODO
 	 */
-	private static String loggingChannel = "216018960531980298";
+	//private static String loggingChannel = "216018960531980298";
 
 	/**
 	 * Static reference to time formatter
@@ -64,8 +64,10 @@ public class LoggingListener {
 	 */
 	@EventSubscriber
 	public void onChannelCreate(ChannelCreateEvent event){
-
-		Utils.writeMessageToChannel("`" + timeFormat.format(new Date()) + "`" + " The channel **#" + event.getChannel().getName() + "** was created.", event.getChannel().getGuild().getChannelByID(botListener.getServerInfo(event.getChannel().getGuild().getID()).getLoggingChannelId()));
+		Utils.writeMessageToChannel("`" + timeFormat.format(new Date()) + "`" +
+				" The channel **#" + event.getChannel().getName() + "** was created.",
+				event.getChannel().getGuild().getChannelByID(botListener.getServerInfo(
+						event.getChannel().getGuild().getID()).getLoggingChannelId()));
 
 	}
 
@@ -75,7 +77,10 @@ public class LoggingListener {
 	 */
 	@EventSubscriber
 	public void onChannelDelete(ChannelDeleteEvent event){
-		Utils.writeMessageToChannel("`" + timeFormat.format(new Date()) + "`" + " The channel **#" + event.getChannel().getName() + "** was d.", Authorization.client.getChannelByID(loggingChannel));
+		Utils.writeMessageToChannel("`" + timeFormat.format(new Date()) + "`" + " The channel **#" +
+				event.getChannel().getName() + "** was d.",
+				event.getChannel().getGuild().getChannelByID(botListener.getServerInfo(
+						event.getChannel().getGuild().getID()).getLoggingChannelId()));
 	}
 
 	/**
@@ -85,12 +90,19 @@ public class LoggingListener {
 	@EventSubscriber
 	public void onChannelUpdate(ChannelUpdateEvent event){
 		if(!event.getOldChannel().getName().equals(event.getNewChannel().getName())){
-			Utils.writeMessageToChannel("`" + timeFormat.format(new Date()) + "`" + " The channel **#" + event.getOldChannel().getName() +"** was changed to **#" + event.getNewChannel().getName(), Authorization.client.getChannelByID(loggingChannel));
+			Utils.writeMessageToChannel("`" + timeFormat.format(new Date()) + "`" + " The channel **#" +
+					event.getOldChannel().getName() +"** was changed to **#" + event.getNewChannel().getName(),
+					event.getNewChannel().getGuild().getChannelByID(botListener.getServerInfo(event.getNewChannel().getGuild().getID()).getLoggingChannelId()));
+			
 		} else if(event.getOldChannel().getTopic() == null && event.getNewChannel().getTopic() != null) {
-			Utils.writeMessageToChannel("`" + timeFormat.format(new Date()) + "`" + " The channel **#" + event.getOldChannel().getName() +"** topic was changed to __*" + event.getNewChannel().getTopic() +"*__", Authorization.client.getChannelByID(loggingChannel));
+			Utils.writeMessageToChannel("`" + timeFormat.format(new Date()) + "`" + " The channel **#" +
+					event.getOldChannel().getName() +"** topic was changed to __*" + event.getNewChannel().getTopic() +
+					"*__", event.getNewChannel().getGuild().getChannelByID(botListener.getServerInfo(
+							event.getNewChannel().getGuild().getID()).getLoggingChannelId()));
+			
 		} else if(!event.getOldChannel().getTopic().equals(event.getNewChannel().getTopic())){
 
-			Utils.writeMessageToChannel("`" + timeFormat.format(new Date()) + "`" + " The channel **#" + event.getOldChannel().getName() +"** topic was changed from __*" + event.getOldChannel().getTopic() + "*__ to __*" + event.getNewChannel().getTopic() +"*__", Authorization.client.getChannelByID(loggingChannel));
+			Utils.writeMessageToChannel("`" + timeFormat.format(new Date()) + "`" + " The channel **#" + event.getOldChannel().getName() +"** topic was changed from __*" + event.getOldChannel().getTopic() + "*__ to __*" + event.getNewChannel().getTopic() +"*__", event.getNewChannel().getGuild().getChannelByID(botListener.getServerInfo(event.getNewChannel().getGuild().getID()).getLoggingChannelId()));
 		} 
 	}
 
@@ -100,7 +112,15 @@ public class LoggingListener {
 	 */
 	@EventSubscriber
 	public void onMessageDelete(MessageDeleteEvent event){
-		Utils.writeMessageToChannel("`" + timeFormat.format(new Date()) + "` __**" + event.getMessage().getAuthor().getName() + "'s**__ Message: `" + event.getMessage() + "` was deleted in __*#" + event.getMessage().getChannel().getName() + "*__", Authorization.client.getChannelByID(loggingChannel));
+		if(event.getMessage().getChannel().getGuild().getChannelByID(botListener.getServerInfo(
+				event.getMessage().getChannel().getGuild().getID()).getLoggingChannelId()) != null){
+
+			Utils.writeMessageToChannel("`" + timeFormat.format(new Date()) + "` __**" +
+					event.getMessage().getAuthor().getName() + "'s**__ Message: `" + event.getMessage() +
+					"` was deleted in __*#" + event.getMessage().getChannel().getName() + "*__", event.getMessage().getChannel().getGuild().getChannelByID(botListener.getServerInfo(
+							event.getMessage().getChannel().getGuild().getID()).getLoggingChannelId()));
+		}
+				
 	}
 
 	/**
@@ -109,7 +129,11 @@ public class LoggingListener {
 	 */
 	@EventSubscriber
 	public void onMessagePin(MessagePinEvent event){
-		Utils.writeMessageToChannel("`" + timeFormat.format(new Date()) + "` __**" + event.getMessage().getAuthor().getName() + "**__ Message: " + event.getMessage() + " was pinned in channel: __*#" + event.getChannel().getName() + "*__",  Authorization.client.getChannelByID(loggingChannel));
+		Utils.writeMessageToChannel("`" + timeFormat.format(new Date()) + "` __**" +
+				event.getMessage().getAuthor().getName() + "**__ Message: " + event.getMessage() +
+				" was pinned in channel: __*#" + event.getChannel().getName() + "*__",
+				event.getChannel().getGuild().getChannelByID(botListener.getServerInfo(
+						event.getChannel().getGuild().getID()).getLoggingChannelId()));
 	}
 
 	/**
@@ -119,7 +143,12 @@ public class LoggingListener {
 	@EventSubscriber
 	public void onMessageUpdate(MessageUpdateEvent event){
 		if(event.getNewMessage().getAuthor().getClient() == Authorization.client){
-			Utils.writeMessageToChannel("`" + timeFormat.format(new Date()) + "` __**" + event.getOldMessage().getAuthor().getName() + "**__ Message was updated: \n **Before:** " + event.getOldMessage().getContent() + " \n **After:** " + event.getNewMessage().getContent(),  Authorization.client.getChannelByID(loggingChannel));
+			Utils.writeMessageToChannel("`" + timeFormat.format(new Date()) + "` __**" +
+					event.getOldMessage().getAuthor().getName() + "**__ Message was updated: \n **Before:** " +
+					event.getOldMessage().getContent() + " \n **After:** " + event.getNewMessage().getContent(),
+					event.getNewMessage().getChannel().getGuild().getChannelByID(botListener.getServerInfo(
+							event.getNewMessage().getChannel().getGuild().getID()).getLoggingChannelId()));
+			
 		}
 		
 	}
@@ -130,7 +159,9 @@ public class LoggingListener {
 	 */
 	@EventSubscriber
 	public void onRoleCreate(RoleCreateEvent event){
-		Utils.writeMessageToChannel("`" + timeFormat.format(new Date()) + "`" + " Role: " + event.getRole() + " has been created.", Authorization.client.getChannelByID(loggingChannel));
+		Utils.writeMessageToChannel("`" + timeFormat.format(new Date()) + "`" +
+				" Role: " + event.getRole() + " has been created."
+				, event.getGuild().getChannelByID(botListener.getServerInfo(event.getGuild().getID()).getLoggingChannelId()));
 		//TODO fix 
 	}
 
@@ -140,7 +171,10 @@ public class LoggingListener {
 	 */
 	@EventSubscriber
 	public void onRoleDelete(RoleDeleteEvent event){
-		Utils.writeMessageToChannel("`" + timeFormat.format(new Date()) + "`" + " Role: " + event.getRole() + " has been deleted.", Authorization.client.getChannelByID(loggingChannel));
+		Utils.writeMessageToChannel("`" + timeFormat.format(new Date()) + "`" +
+				" Role: " + event.getRole() + " has been deleted.",
+				event.getGuild().getChannelByID(botListener.getServerInfo(event.getGuild().getID()).getLoggingChannelId()));
+		
 	}
 
 	/**
@@ -149,7 +183,10 @@ public class LoggingListener {
 	 */
 	@EventSubscriber
 	public void onRoleUpdate(RoleUpdateEvent event){
-		Utils.writeMessageToChannel("`" + timeFormat.format(new Date()) + "`" + " Role: " + event.getOldRole() + " has been updated to " + event.getNewRole(), Authorization.client.getChannelByID(loggingChannel));
+		Utils.writeMessageToChannel("`" + timeFormat.format(new Date()) + "`" +
+				" Role: " + event.getOldRole() + " has been updated to " + event.getNewRole(),
+				event.getGuild().getChannelByID(botListener.getServerInfo(event.getGuild().getID()).getLoggingChannelId()));
+		
 	}
 
 	/**
@@ -158,7 +195,10 @@ public class LoggingListener {
 	 */
 	@EventSubscriber
 	public void onUserBan(UserBanEvent event){
-		Utils.writeMessageToChannel("`" + timeFormat.format(new Date()) + "`" + " The user: __**" + event.getUser().getName() + "**__ was banned from the server", Authorization.client.getChannelByID(loggingChannel));
+		Utils.writeMessageToChannel("`" + timeFormat.format(new Date()) + "`" + 
+				" The user: __**" + event.getUser().getName() + "**__ was banned from the server",
+				event.getGuild().getChannelByID(botListener.getServerInfo(event.getGuild().getID()).getLoggingChannelId()));
+		
 	}
 
 	/**
@@ -167,7 +207,10 @@ public class LoggingListener {
 	 */
 	@EventSubscriber
 	public void onUserJoin(UserJoinEvent event){
-		Utils.writeMessageToChannel("`" + timeFormat.format(new Date()) + "`" + " The user: __**" + event.getUser().getName() + "**__ has joined the server", Authorization.client.getChannelByID(loggingChannel));
+		Utils.writeMessageToChannel("`" + timeFormat.format(new Date()) + "`" +
+				" The user: __**" + event.getUser().getName() + "**__ has joined the server",
+				event.getGuild().getChannelByID(botListener.getServerInfo(event.getGuild().getID()).getLoggingChannelId()));
+		
 	}
 
 	/**
@@ -176,7 +219,10 @@ public class LoggingListener {
 	 */
 	@EventSubscriber
 	public void onUserLeave(UserLeaveEvent event){
-		Utils.writeMessageToChannel("`" + timeFormat.format(new Date()) + "`" + " The user: __**" + event.getUser().getName() + "**__ has left the server", Authorization.client.getChannelByID(loggingChannel));
+		Utils.writeMessageToChannel("`" + timeFormat.format(new Date()) + "`" +
+				" The user: __**" + event.getUser().getName() + "**__ has left the server",
+				event.getGuild().getChannelByID(botListener.getServerInfo(event.getGuild().getID()).getLoggingChannelId()));
+		
 	}
 
 	/**
@@ -185,7 +231,10 @@ public class LoggingListener {
 	 */
 	@EventSubscriber
 	public void onUserPardon(UserPardonEvent event){
-		Utils.writeMessageToChannel("`" + timeFormat.format(new Date()) + "`" + " The user: __**" + event.getUser().getName() + "**__ was unbanned from the server", Authorization.client.getChannelByID(loggingChannel));
+		Utils.writeMessageToChannel("`" + timeFormat.format(new Date()) + "`" +
+				" The user: __**" + event.getUser().getName() + "**__ was unbanned from the server",
+				event.getGuild().getChannelByID(botListener.getServerInfo(event.getGuild().getID()).getLoggingChannelId()));
+		
 	}
 
 	/**
@@ -207,11 +256,15 @@ public class LoggingListener {
 		String message = null;
 		boolean update = false;
 		if(!event.getOldUser().getName().equals(event.getNewUser().getName())){
-			message = event.getOldUser().getName() + " has changed there name to: " + event.getNewUser().getName();
+			message = event.getOldUser().getName() + " has changed there name to: " +
+					event.getNewUser().getName();
+			
 			update = true;
 
 		} else if (!event.getOldUser().getAvatarURL().equals(event.getNewUser().getAvatarURL())){
-			message = event.getNewUser().getName() + " has changed avatars \n **Before:** " + event.getOldUser().getAvatarURL() + "\n **After:** " + event.getNewUser().getAvatarURL();
+			message = event.getNewUser().getName() + " has changed avatars \n **Before:** " +
+					event.getOldUser().getAvatarURL() + "\n **After:** " + event.getNewUser().getAvatarURL();
+			
 			update = true;
 		}
 		if(update){
@@ -231,9 +284,9 @@ public class LoggingListener {
 	 */
 	@EventSubscriber
 	public void onStatusChangeEvent(StatusChangeEvent event){
-		if(event.getNewStatus().getStatusMessage().toLowerCase().contains("world of warcraft")){
-			Utils.writeMessageToChannel("QUIT PLAYING WoW!!!! " + event.getUser().mention(), Authorization.client.getChannelByID(loggingChannel));
-		}
+	//	if(event.getNewStatus().getStatusMessage().toLowerCase().contains("world of warcraft")){
+			//Utils.writeMessageToChannel("QUIT PLAYING WoW!!!! " + event.getUser().mention(), event.getGuild().getChannelByID(botListener.getServerInfo(event.getGuild().getID()).getLoggingChannelId()));
+	//	}
 
 
 	}

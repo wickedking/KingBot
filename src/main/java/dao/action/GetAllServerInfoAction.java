@@ -54,9 +54,10 @@ public class GetAllServerInfoAction {
 		sb.append(" T101.action2, ");
 		sb.append(" T101.message ");
 		sb.append(" FROM ");
-		sb.append(" T100_servers T100, ");
+		sb.append(" T100_servers T100 ");
+		sb.append(" LEFT OUTER JOIN ");
 		sb.append(" T101_key_words T101 ");
-		sb.append(" WHERE ");
+		sb.append(" ON ");
 		sb.append(" T100.T100_guildId = T101.T100_guildId ");
 		sb.append(" ORDER BY T100.T100_guildId ");
 		
@@ -84,13 +85,16 @@ public class GetAllServerInfoAction {
 				}
 				Keyword keyword = new Keyword();
 				keyword.setKeyword(rs.getString("keyword"));
-				keyword.setAction1(rs.getString("action1"));
-				keyword.setAction2(rs.getString("action2"));
-				keyword.setMessage(rs.getString("message"));
+				if(keyword.getKeyword() != null){
+					keyword.setAction1(rs.getString("action1"));
+					keyword.setAction2(rs.getString("action2"));
+					keyword.setMessage(rs.getString("message"));
+					
+					List<Keyword> keywordList = server.getKeywords();
+					keywordList.add(keyword);
+					server.setKeywords(keywordList);
+				}
 				
-				List<Keyword> keywordList = server.getKeywords();
-				keywordList.add(keyword);
-				server.setKeywords(keywordList);
 				servers.put(server.getGuildId(), server);
 			}
 			
@@ -102,7 +106,9 @@ public class GetAllServerInfoAction {
 			return null;
 		} finally{
 			try {
-				conn.close();
+				if(conn != null && !conn.isClosed()){
+					conn.close();
+				}
 			} catch (SQLException e) {
 				logger.error(e);
 			}

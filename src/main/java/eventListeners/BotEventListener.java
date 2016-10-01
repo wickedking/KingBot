@@ -16,6 +16,7 @@ import bean.Keyword;
 import constants.BotConstants;
 import dao.BotDAO;
 import details.ServerInfo;
+import events.AboutEvent;
 import events.BanEvent;
 import events.CommandsEvent;
 import events.DeleteKeywordEvent;
@@ -32,6 +33,7 @@ import events.RankEvent;
 import events.ServerInfoEvent;
 import events.SetKeywordEvent;
 import events.SetLoggingEvent;
+import events.ShrugEvent;
 import events.TimeoutEvent;
 import events.XPEvent;
 import login.Authorization;
@@ -165,10 +167,25 @@ public class BotEventListener {
 		} else if (event.getMessage().getContent().startsWith("`playmusic")) {
 			event.getClient().getDispatcher().dispatch(new PlayMusicEvent(event.getMessage()));
 			
-		} else {
+		} else if (event.getMessage().getContent().startsWith("/shrug")) {
+			event.getClient().getDispatcher().dispatch(new ShrugEvent(event.getMessage()));
+			
+		}  else if (event.getMessage().getContent().startsWith("`about")) {
+			event.getClient().getDispatcher().dispatch(new AboutEvent(event.getMessage()));
+			
+		}else {
 			event.getClient().getDispatcher().dispatch(new KeywordCheckEvent(event.getMessage()));
 		}
 
+	}
+	
+	/**
+	 * Writes the shrug ascii out to the channel
+	 * @param event
+	 */
+	@EventSubscriber
+	public void onShrug(ShrugEvent event){
+		Utils.writeMessageToChannel("¯\\_(ツ)_/¯", event.getMessage().getChannel());
 	}
 
 
@@ -218,8 +235,7 @@ public class BotEventListener {
 	 */
 	@EventSubscriber
 	public void onCommands(CommandsEvent event){
-		String commands = BotConstants.HELP_MESSAGE;
-		Utils.writeMessageToChannel(event.getMessage().getAuthor().mention() + commands, event.getMessage().getChannel());
+		Utils.writeMessageToChannel(event.getMessage().getAuthor().mention() + BotConstants.HELP_MESSAGE, event.getMessage().getChannel());
 	}
 
 	/**
@@ -510,8 +526,15 @@ public class BotEventListener {
 	 */
 	@EventSubscriber
 	public void onDeleteLogging(DeleteLoggingEvent event){
-		botDAO.deleteLoggingChannel(event.getMessage().getGuild().getID());
-		Utils.writeMessageToChannel("Logging will no longer occur", event.getMessage().getChannel());
+		boolean success = botDAO.deleteLoggingChannel(event.getMessage().getGuild().getID());
+		String message = "";
+		if(success){
+			message = "Logging will no longer occur";
+		} else {
+			message = "Error occured when stopping logging. Please make sure your in the logging channel when using this command";
+		}
+		resetServerInfo(event.getMessage().getGuild().getID());
+		Utils.writeMessageToChannel(message, event.getMessage().getChannel());
 	}
 	
 	/**
@@ -526,6 +549,7 @@ public class BotEventListener {
 		} else {
 			Utils.writeMessageToChannel("Error Setting this channel as logging. Check to see if you have already set a logging channel", event.getMessage().getChannel());
 		}
+		resetServerInfo(event.getMessage().getGuild().getID());
 	}
 	
 	/**
@@ -553,6 +577,15 @@ public class BotEventListener {
 			logger.error(e);
 		}
 			
+	}
+	
+	/**
+	 * Used to provide basic information about the bot.
+	 * @param event
+	 */
+	@EventSubscriber
+	public void onAbout(AboutEvent event){
+		Utils.writeMessageToChannel(BotConstants.ABOUT_MESSAGE, event.getMessage().getChannel());
 	}
 	
 

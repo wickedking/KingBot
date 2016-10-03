@@ -2,6 +2,7 @@ package eventListeners;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import bean.GuildLoggingBean;
 import bean.Keyword;
 import constants.BotConstants;
 import dao.BotDAO;
@@ -21,8 +23,10 @@ import events.BanEvent;
 import events.CommandsEvent;
 import events.DeleteKeywordEvent;
 import events.DeleteLoggingEvent;
+import events.EightBallEvent;
 import events.GetLoggingEvent;
 import events.GiveawayEvent;
+import events.HelpEvent;
 import events.KeywordCheckEvent;
 import events.KeywordEvent;
 import events.KickEvent;
@@ -116,7 +120,14 @@ public class BotEventListener {
 	@EventSubscriber
 	public void onMessageReceived(MessageReceivedEvent event){
 		logger.warn(event.getMessage().getAuthor().getID());
-		
+		GuildLoggingBean loggingBean = new GuildLoggingBean();
+		loggingBean.setGuildId(event.getMessage().getGuild().getID());
+		loggingBean.setNumMessages(1);
+		LocalTime time = LocalTime.now();
+		logger.warn(time.getHour());
+		loggingBean.setHour(time.getHour());
+		//botDAO.updateLoggingForGuild(loggingBean);
+
 		event.getClient().getDispatcher().dispatch(new XPEvent(event.getMessage()));
 		//TODO refactor, please just refactor this
 		if(event.getMessage().getContent().startsWith("`prune")){
@@ -170,10 +181,16 @@ public class BotEventListener {
 		} else if (event.getMessage().getContent().startsWith("/shrug")) {
 			event.getClient().getDispatcher().dispatch(new ShrugEvent(event.getMessage()));
 			
-		}  else if (event.getMessage().getContent().startsWith("`about")) {
+		} else if (event.getMessage().getContent().startsWith("`about")) {
 			event.getClient().getDispatcher().dispatch(new AboutEvent(event.getMessage()));
 			
-		}else {
+		} else if (event.getMessage().getContent().startsWith("`help")) {
+			event.getClient().getDispatcher().dispatch(new HelpEvent(event.getMessage()));
+			
+		} else if (event.getMessage().getContent().startsWith("`8ball")) {
+			event.getClient().getDispatcher().dispatch(new EightBallEvent(event.getMessage()));
+			
+		} else {
 			event.getClient().getDispatcher().dispatch(new KeywordCheckEvent(event.getMessage()));
 		}
 
@@ -321,7 +338,7 @@ public class BotEventListener {
 	 */
 	@EventSubscriber
 	public void onServerInfo(ServerInfoEvent event){
-		IGuild server = Authorization.client.getGuilds().get(0);
+		IGuild server = Authorization.client.getGuilds().get(Authorization.client.getGuilds().indexOf(event.getMessage().getGuild()));
 		Utils.writeMessageToChannel("```Server Name: " + server.getName() + "\n Owner: " + server.getOwner().getName() + "\n Number of Channels: " + server.getChannels().size() + "\n Server creation date: " + server.getCreationDate() + "\n Number of Roles: " + server.getRoles().size() + "\n Number of users: " + server.getUsers().size() + "\n Number of Voice Channels: " + server.getVoiceChannels().size() + "```", Authorization.client.getChannelByID(event.getMessage().getChannel().getID()));
 
 	}
@@ -586,6 +603,18 @@ public class BotEventListener {
 	@EventSubscriber
 	public void onAbout(AboutEvent event){
 		Utils.writeMessageToChannel(BotConstants.ABOUT_MESSAGE, event.getMessage().getChannel());
+	}
+	
+	/**
+	 * Provides an 8ball answer to a question
+	 * @param event
+	 */
+	@EventSubscriber
+	public void onEightBall(EightBallEvent event){
+		List<String> eightBall = Utils.getEightBallAnswers();
+		Random random = new Random();
+		int choice = random.nextInt(eightBall.size());
+		Utils.writeMessageToChannel(eightBall.get(choice), event.getMessage().getChannel());
 	}
 	
 

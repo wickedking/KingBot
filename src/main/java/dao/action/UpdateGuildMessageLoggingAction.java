@@ -7,15 +7,20 @@ import java.sql.SQLException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import bean.GuildLoggingBean;
+
 /**
- * Deletes the logging channel for specified server
+ * Used to update the number of messages per hour in a server
  * @author King
  *
  */
-public class DeleteLoggingChanAction {
-	
-	private static final Logger logger = LogManager.getLogger(DeleteLoggingChanAction.class);
-	
+public class UpdateGuildMessageLoggingAction {
+
+	/**
+	 * Logger
+	 */
+	private static final Logger logger = LogManager.getLogger(UpdateGuildMessageLoggingAction.class);
+
 	/**
 	 * The sql to run
 	 */
@@ -25,42 +30,57 @@ public class DeleteLoggingChanAction {
 	 * The connection
 	 */
 	private Connection conn;
-	
+
 	/**
 	 * The constructor
 	 * @param connection
 	 */
-	public DeleteLoggingChanAction(Connection connection){
+	public UpdateGuildMessageLoggingAction(Connection connection){
 		conn = connection;
 	}
-	
+
 	/**
 	 * Creates the sql to run
 	 */
 	private void createSql(){
 		StringBuilder sb = new StringBuilder();
-		
-		sb.append(" DELETE ");
-		sb.append(" FROM ");
-		sb.append(" T200_Logging");
+
+		sb.append(" UPDATE ");
+		sb.append(" T300_stats ");
+		sb.append(" SET ");
+		sb.append(" total_messages = ? ");
 		sb.append(" WHERE ");
 		sb.append(" T100_guildId = ?");
+		sb.append(" AND hour = ?");
 
 		sql = sb.toString();
 	}
-	
+
+
 	/**
-	 * Executes the sql and return success of sql
 	 * 
-	 * @param guildId The guildId
-	 * @return boolean if successful
+	 * @param loggingBean
+	 * @return
 	 */
-	public boolean execute(String guildId){
+	public boolean execute(GuildLoggingBean loggingBean){
+		return execute(loggingBean.getGuildId(), loggingBean.getHour(), loggingBean.getNumMessages());
+	}
+
+	/**
+	 * 
+	 * @param guildId
+	 * @param hour
+	 * @param numMessages
+	 * @return
+	 */
+	public boolean execute(String guildId, int hour, int numMessages){
 		createSql();
 		logger.warn(sql);
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
-			ps.setString(1, guildId);
+			ps.setInt(1, numMessages);
+			ps.setString(2, guildId);
+			ps.setInt(3, hour);
 			int rows = ps.executeUpdate();
 			ps.close();
 			if(rows > 0){
@@ -78,9 +98,8 @@ public class DeleteLoggingChanAction {
 				logger.error(e);
 			}
 		}
-		
-		
-	}
 
+
+	}
 
 }

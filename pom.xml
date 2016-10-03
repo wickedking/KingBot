@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>WickedKing</groupId>
 	<artifactId>KingBot</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2</version>
 
 	<repositories>
 		<repository>
@@ -44,6 +44,7 @@
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<build>
@@ -62,13 +63,5 @@
 			</plugin>
 		</plugins>
 	</build>
-	<!-- <build> -->
-	<!-- <plugins> -->
-	<!-- <plugin> -->
-	<!-- <groupId>org.springframework.boot</groupId> -->
-	<!-- <artifactId>spring-boot-maven-plugin</artifactId> -->
-	<!-- </plugin> -->
-	<!-- </plugins> -->
-	<!-- </build> -->
 
 </project>

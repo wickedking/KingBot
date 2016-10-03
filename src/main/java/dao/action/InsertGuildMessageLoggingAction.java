@@ -8,13 +8,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Deletes the logging channel for specified server
+ * Insert guild into table for logging
+ * 
  * @author King
  *
  */
-public class DeleteLoggingChanAction {
+public class InsertGuildMessageLoggingAction {
 	
-	private static final Logger logger = LogManager.getLogger(DeleteLoggingChanAction.class);
+	
+	private static final Logger logger = LogManager.getLogger(InsertGuildMessageLoggingAction.class);
 	
 	/**
 	 * The sql to run
@@ -30,7 +32,7 @@ public class DeleteLoggingChanAction {
 	 * The constructor
 	 * @param connection
 	 */
-	public DeleteLoggingChanAction(Connection connection){
+	public InsertGuildMessageLoggingAction(Connection connection){
 		conn = connection;
 	}
 	
@@ -40,27 +42,36 @@ public class DeleteLoggingChanAction {
 	private void createSql(){
 		StringBuilder sb = new StringBuilder();
 		
-		sb.append(" DELETE ");
-		sb.append(" FROM ");
-		sb.append(" T200_Logging");
-		sb.append(" WHERE ");
-		sb.append(" T100_guildId = ?");
+		sb.append(" INSERT INTO ");
+		sb.append(" T300_stats (");
+		sb.append(" T100_guildId, ");
+		sb.append(" hour, ");
+		sb.append(" total_messages)");
+		sb.append(" VALUES (");
+		sb.append(" ? ,");
+		sb.append(" ? ,");
+		sb.append(" ? ,");
+		sb.append(" ) ");
 
 		sql = sb.toString();
 	}
 	
+	
 	/**
-	 * Executes the sql and return success of sql
 	 * 
-	 * @param guildId The guildId
-	 * @return boolean if successful
+	 * @param guildId
+	 * @param hour
+	 * @param numMessages
+	 * @return
 	 */
-	public boolean execute(String guildId){
+	public boolean execute(String guildId, int hour, int numMessages){
 		createSql();
 		logger.warn(sql);
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, guildId);
+			ps.setInt(2, hour);
+			ps.setInt(3, numMessages);
 			int rows = ps.executeUpdate();
 			ps.close();
 			if(rows > 0){
@@ -81,6 +92,5 @@ public class DeleteLoggingChanAction {
 		
 		
 	}
-
 
 }

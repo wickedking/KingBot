@@ -1,5 +1,6 @@
 package util;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -135,5 +136,29 @@ public class Utils {
 			}
 		}
 		return false;
+	}
+	
+	public static List<String> getEightBallAnswers(){
+		return Arrays.asList(BotConstants.BALL1,
+				BotConstants.BALL2,
+				BotConstants.BALL3,
+				BotConstants.BALL4,
+				BotConstants.BALL5,
+				BotConstants.BALL6,
+				BotConstants.BALL7,
+				BotConstants.BALL8,
+				BotConstants.BALL9,
+				BotConstants.BALL10,
+				BotConstants.BALL11,
+				BotConstants.BALL12,
+				BotConstants.BALL13,
+				BotConstants.BALL14,
+				BotConstants.BALL15,
+				BotConstants.BALL16,
+				BotConstants.BALL17,
+				BotConstants.BALL18,
+				BotConstants.BALL19,
+				BotConstants.BALL20
+				);
 	}
 }

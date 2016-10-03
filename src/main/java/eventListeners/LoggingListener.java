@@ -35,15 +35,16 @@ import util.Utils;
  */
 public class LoggingListener {
 
-	BotEventListener botListener;
+	/**
+	 * A reference to the botListener
+	 */
+	private BotEventListener botListener;
 	
+	/**
+	 * Logger
+	 */
 	private static final Logger logger = LogManager.getLogger(LoggingListener.class);
 
-	/**
-	 * Static Channel Id for the loggingChannel. Will remove in future update
-	 * TODO
-	 */
-	//private static String loggingChannel = "216018960531980298";
 
 	/**
 	 * Static reference to time formatter
@@ -279,15 +280,11 @@ public class LoggingListener {
 	}
 
 	/**
-	 * Logs message when somebody starts playing WoW
+	 * Empty method
 	 * @param event
 	 */
 	@EventSubscriber
 	public void onStatusChangeEvent(StatusChangeEvent event){
-	//	if(event.getNewStatus().getStatusMessage().toLowerCase().contains("world of warcraft")){
-			//Utils.writeMessageToChannel("QUIT PLAYING WoW!!!! " + event.getUser().mention(), event.getGuild().getChannelByID(botListener.getServerInfo(event.getGuild().getID()).getLoggingChannelId()));
-	//	}
-
 
 	}
 

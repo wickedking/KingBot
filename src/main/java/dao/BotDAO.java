@@ -37,7 +37,7 @@ import hidden.HiddenConstants;
 public class BotDAO {
 	
 	/**
-	 * Logger
+	 * Logger{
 	 */
 	private static final Logger logger = LogManager.getLogger(BotDAO.class);
 

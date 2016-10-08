@@ -14,6 +14,9 @@ import org.apache.logging.log4j.Logger;
  */
 public class DeleteLoggingChanAction {
 	
+	/**
+	 * Logger
+	 */
 	private static final Logger logger = LogManager.getLogger(DeleteLoggingChanAction.class);
 	
 	/**

@@ -87,10 +87,15 @@ public class Utils {
 	
 	/**
 	 * Will determine if the user has the admin role
+	 * @param user 
+	 * @param serverOwner 
 	 * @param roles
 	 * @return
 	 */
-	public static boolean isBotAdmin(List<IRole> roles){
+	public static boolean isBotAdmin(IUser user, IUser serverOwner, List<IRole> roles){
+		if(user.equals(serverOwner)){
+			return true;
+		}
 		for(IRole role : roles){
 			if(role.getName().equals(botAdmin) || role.getName().equals(botMod)){
 				return true;

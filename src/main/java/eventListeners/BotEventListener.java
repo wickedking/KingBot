@@ -38,7 +38,9 @@ import events.ServerInfoEvent;
 import events.SetKeywordEvent;
 import events.SetLoggingEvent;
 import events.ShrugEvent;
+import events.TableFlipEvent;
 import events.TimeoutEvent;
+import events.UnTableFlipEvent;
 import events.XPEvent;
 import login.Authorization;
 import sx.blah.discord.api.events.EventSubscriber;
@@ -72,7 +74,7 @@ public class BotEventListener {
 	Map<String, ServerInfo> servers = new HashMap<>();
 	
 	/**
-	 * returns the serverinfo the for given server
+	 * returns the serverinfo for the given server
 	 * @param guildId
 	 * @return ServerInfo
 	 */
@@ -130,65 +132,71 @@ public class BotEventListener {
 
 		event.getClient().getDispatcher().dispatch(new XPEvent(event.getMessage()));
 		//TODO refactor, please just refactor this
-		if(event.getMessage().getContent().startsWith("`prune")){
+		if(event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "prune")){
 			event.getClient().getDispatcher().dispatch(new PruneEvent(event.getMessage()));
 
-		} else if (event.getMessage().getContent().startsWith("`rank")){
+		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "rank")){
 			event.getClient().getDispatcher().dispatch(new RankEvent(event.getMessage()));
 
-		} else if (event.getMessage().getContent().startsWith("`levels")){
+		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "levels")){
 			event.getClient().getDispatcher().dispatch(new LevelsEvent(event.getMessage()));
 
-		} else if (event.getMessage().getContent().startsWith("`keywords")) {
+		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "keywords")) {
 			event.getClient().getDispatcher().dispatch(new KeywordEvent(event.getMessage()));
 
-		} else if (event.getMessage().getContent().startsWith("`timeout ")) {
+		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "timeout ")) {
 			event.getClient().getDispatcher().dispatch(new TimeoutEvent(event.getMessage()));
 
-		} else if (event.getMessage().getContent().startsWith("`giveaway")) {
+		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "giveaway")) {
 			event.getClient().getDispatcher().dispatch(new GiveawayEvent(event.getMessage()));
 
-		} else if (event.getMessage().getContent().startsWith("`commands")) {
+		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "commands")) {
 			event.getClient().getDispatcher().dispatch(new CommandsEvent(event.getMessage()));
 
-		} else if (event.getMessage().getContent().startsWith("`kick ")) {
+		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "kick ")) {
 			event.getClient().getDispatcher().dispatch(new KickEvent(event.getMessage()));
 
-		} else if (event.getMessage().getContent().startsWith("`ban ")) {
+		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "ban ")) {
 			event.getClient().getDispatcher().dispatch(new BanEvent(event.getMessage()));
 
-		} else if (event.getMessage().getContent().startsWith("`serverinfo")) {
+		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "serverinfo")) {
 			event.getClient().getDispatcher().dispatch(new ServerInfoEvent(event.getMessage()));
 
-		} else if (event.getMessage().getContent().startsWith("`setkeyword ")) {
+		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "setkeyword ")) {
 			event.getClient().getDispatcher().dispatch(new SetKeywordEvent(event.getMessage()));
 			
-		} else if (event.getMessage().getContent().startsWith("`deletekeyword ")) {
+		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "deletekeyword ")) {
 			event.getClient().getDispatcher().dispatch(new DeleteKeywordEvent(event.getMessage()));
 			
-		} else if (event.getMessage().getContent().startsWith("`setlogging")) {
+		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "setlogging")) {
 			event.getClient().getDispatcher().dispatch(new SetLoggingEvent(event.getMessage()));
 			
-		} else if (event.getMessage().getContent().startsWith("`deletelogging")) {
+		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "deletelogging")) {
 			event.getClient().getDispatcher().dispatch(new DeleteLoggingEvent(event.getMessage()));
 			
-		} else if (event.getMessage().getContent().startsWith("`getlogging")) {
+		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "getlogging")) {
 			event.getClient().getDispatcher().dispatch(new GetLoggingEvent(event.getMessage()));
 			
-		} else if (event.getMessage().getContent().startsWith("`playmusic")) {
+		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "playmusic")) {
 			event.getClient().getDispatcher().dispatch(new PlayMusicEvent(event.getMessage()));
 			
 		} else if (event.getMessage().getContent().startsWith("/shrug")) {
 			event.getClient().getDispatcher().dispatch(new ShrugEvent(event.getMessage()));
 			
-		} else if (event.getMessage().getContent().startsWith("`about")) {
+		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "about")) {
 			event.getClient().getDispatcher().dispatch(new AboutEvent(event.getMessage()));
 			
-		} else if (event.getMessage().getContent().startsWith("`help")) {
+		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "help")) {
 			event.getClient().getDispatcher().dispatch(new HelpEvent(event.getMessage()));
 			
-		} else if (event.getMessage().getContent().startsWith("`8ball")) {
+		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "8ball")) {
 			event.getClient().getDispatcher().dispatch(new EightBallEvent(event.getMessage()));
+			
+		} else if (event.getMessage().getContent().startsWith("/tableflip")) {
+			event.getClient().getDispatcher().dispatch(new TableFlipEvent(event.getMessage()));
+			
+		} else if (event.getMessage().getContent().startsWith("/unflip")) {
+			event.getClient().getDispatcher().dispatch(new UnTableFlipEvent(event.getMessage()));
 			
 		} else {
 			event.getClient().getDispatcher().dispatch(new KeywordCheckEvent(event.getMessage()));
@@ -202,9 +210,27 @@ public class BotEventListener {
 	 */
 	@EventSubscriber
 	public void onShrug(ShrugEvent event){
-		Utils.writeMessageToChannel("¯\\_(ツ)_/¯", event.getMessage().getChannel());
+		Utils.writeMessageToChannel(BotConstants.SHRUG, event.getMessage().getChannel());
 	}
-
+	
+	/**
+	 * Writes the shrug ascii out to the channel
+	 * @param event
+	 */
+	@EventSubscriber
+	public void onTableFlip(TableFlipEvent event){
+		Utils.writeMessageToChannel(BotConstants.TABLE_FLIP, event.getMessage().getChannel());
+	}
+	
+	
+	/**
+	 * Writes the shrug ascii out to the channel
+	 * @param event
+	 */
+	@EventSubscriber
+	public void onUnTableFlip(UnTableFlipEvent event){
+		Utils.writeMessageToChannel(BotConstants.UN_TABLE_FLIP, event.getMessage().getChannel());
+	}
 
 	/**
 	 * Bans the user mentioned
@@ -212,7 +238,7 @@ public class BotEventListener {
 	 */
 	@EventSubscriber
 	public void onBan(BanEvent event){
-		boolean isAdmin = Utils.isBotAdmin(event.getMessage().getAuthor().getRolesForGuild(event.getMessage().getGuild()));
+		boolean isAdmin = Utils.isBotAdmin(event.getMessage().getAuthor(), event.getMessage().getGuild().getOwner(), event.getMessage().getAuthor().getRolesForGuild(event.getMessage().getGuild()));
 		if(isAdmin){
 			IGuild guild = event.getClient().getGuilds().get(0);
 			try {
@@ -232,7 +258,7 @@ public class BotEventListener {
 	@EventSubscriber
 	public void onKick(KickEvent event){
 
-		boolean isAdmin = Utils.isBotAdmin(event.getMessage().getAuthor().getRolesForGuild(event.getMessage().getGuild()));
+		boolean isAdmin = Utils.isBotAdmin(event.getMessage().getAuthor(), event.getMessage().getGuild().getOwner(), event.getMessage().getAuthor().getRolesForGuild(event.getMessage().getGuild()));
 		if(isAdmin){
 			try {
 				Authorization.client.getGuilds().get(0).kickUser(event.getMessage().getMentions().get(0));
@@ -263,7 +289,7 @@ public class BotEventListener {
 	@EventSubscriber
 	public void onGiveaway(GiveawayEvent event){
 		
-		Utils.writeMessageToChannel("This feature is not yet implemented. Please tell WickedKing to get off his lazy ass and finish it", event.getMessage().getChannel());
+		Utils.writeMessageToChannel(BotConstants.UNFINISHED, event.getMessage().getChannel());
 	}
 
 	/**
@@ -273,9 +299,9 @@ public class BotEventListener {
 	 */
 	@EventSubscriber
 	public void onTimeout(TimeoutEvent event){
-		boolean isAdmin = Utils.isBotAdmin(event.getMessage().getAuthor().getRolesForGuild(event.getMessage().getGuild()));
+		boolean isAdmin = Utils.isBotAdmin(event.getMessage().getAuthor(), event.getMessage().getGuild().getOwner(), event.getMessage().getAuthor().getRolesForGuild(event.getMessage().getGuild()));
 		if(isAdmin){
-			Utils.writeMessageToChannel("This feature is not yet implemented. Please tell WickedKing to get off his lazy ass and finish it", event.getMessage().getChannel());
+			Utils.writeMessageToChannel(BotConstants.UNFINISHED, event.getMessage().getChannel());
 		}else {
 			Utils.writeMessageToChannel(BotConstants.NOT_AUTHORIZED, event.getMessage().getChannel());
 		}
@@ -288,7 +314,7 @@ public class BotEventListener {
 	 */
 	@EventSubscriber
 	public void onPrune(PruneEvent event){
-		boolean isAdmin = Utils.isBotAdmin(event.getMessage().getAuthor().getRolesForGuild(event.getMessage().getGuild()));
+		boolean isAdmin = Utils.isBotAdmin(event.getMessage().getAuthor(), event.getMessage().getGuild().getOwner(), event.getMessage().getAuthor().getRolesForGuild(event.getMessage().getGuild()));
 		if(isAdmin){
 			MessageList list = event.getMessage().getChannel().getMessages();
 			String totalMessage = event.getMessage().getContent();
@@ -320,7 +346,7 @@ public class BotEventListener {
 	@EventSubscriber
 	public void onRank(RankEvent event){
 		String xp = botDAO.getXPForUser(event.getMessage().getGuild().getID(), event.getMessage().getAuthor().getID());
-		Utils.writeMessageToChannel(xp, event.getMessage().getChannel());
+		Utils.writeMessageToChannel("@" + event.getMessage().getAuthor() + " " + xp, event.getMessage().getChannel());
 	}
 
 	/**
@@ -329,11 +355,11 @@ public class BotEventListener {
 	 */
 	@EventSubscriber
 	public void onLevels(LevelsEvent event){
-		Utils.writeMessageToChannel("This feature is not yet implemented. Please tell WickedKing to get off his lazy ass and finish it", Authorization.client.getChannelByID(event.getMessage().getChannel().getID()));
+		Utils.writeMessageToChannel(BotConstants.UNFINISHED, Authorization.client.getChannelByID(event.getMessage().getChannel().getID()));
 	}
 
 	/**
-	 * Displays current Infomation about the server
+	 * Displays current Information about the server
 	 * @param event
 	 */
 	@EventSubscriber
@@ -350,7 +376,7 @@ public class BotEventListener {
 	@EventSubscriber
 	public void onGetKeywords(KeywordEvent event){
 
-		boolean isAdmin = Utils.isBotAdmin(event.getMessage().getAuthor().getRolesForGuild(event.getMessage().getGuild()));
+		boolean isAdmin = Utils.isBotAdmin(event.getMessage().getAuthor(), event.getMessage().getGuild().getOwner(), event.getMessage().getAuthor().getRolesForGuild(event.getMessage().getGuild()));
 		if(isAdmin){
 			List<Keyword> keywords = botDAO.getKeywords(event.getMessage().getGuild().getID());
 			if(!keywords.isEmpty()){
@@ -379,11 +405,11 @@ public class BotEventListener {
 	 */
 	@EventSubscriber
 	public void onSetKeyword(SetKeywordEvent event){
-		boolean isAdmin = Utils.isBotAdmin(event.getMessage().getAuthor().getRolesForGuild(event.getMessage().getGuild()));
+		boolean isAdmin = Utils.isBotAdmin(event.getMessage().getAuthor(), event.getMessage().getGuild().getOwner(), event.getMessage().getAuthor().getRolesForGuild(event.getMessage().getGuild()));
 		if(isAdmin){
 			String[] words =  event.getMessage().getContent().split("\\|");
 			if(words.length != 5){
-				Utils.writeMessageToChannel("That keyword command is not correct. Please correct and try again", Authorization.client.getChannelByID(event.getMessage().getChannel().getID()));
+				Utils.writeMessageToChannel(BotConstants.BAD_KEYWORD, Authorization.client.getChannelByID(event.getMessage().getChannel().getID()));
 				return;
 			}
 			Keyword keyword = new Keyword();
@@ -401,7 +427,7 @@ public class BotEventListener {
 					Utils.writeMessageToChannel("Your keyword attempt was not saved successfully", Authorization.client.getChannelByID(event.getMessage().getChannel().getID()));
 				}
 			} else {
-				Utils.writeMessageToChannel("That keyword command is not correct. Please correct and try again", Authorization.client.getChannelByID(event.getMessage().getChannel().getID()));
+				Utils.writeMessageToChannel(BotConstants.BAD_KEYWORD, Authorization.client.getChannelByID(event.getMessage().getChannel().getID()));
 			}
 			
 		} else{
@@ -434,7 +460,7 @@ public class BotEventListener {
 	 */
 	@EventSubscriber
 	public void onDeleteKeyword(DeleteKeywordEvent event){
-		boolean isAdmin = Utils.isBotAdmin(event.getMessage().getAuthor().getRolesForGuild(event.getMessage().getGuild()));
+		boolean isAdmin = Utils.isBotAdmin(event.getMessage().getAuthor(), event.getMessage().getGuild().getOwner(), event.getMessage().getAuthor().getRolesForGuild(event.getMessage().getGuild()));
 		if(isAdmin){
 			Keyword keyword = new Keyword();
 			keyword.setGuildId(event.getMessage().getGuild().getID());
@@ -444,7 +470,7 @@ public class BotEventListener {
 				Utils.writeMessageToChannel("Keyword: " + keyword.getKeyword() + " was deleted successfully", Authorization.client.getChannelByID(event.getMessage().getChannel().getID()));
 				resetServerInfo(event.getMessage().getGuild().getID());
 			} else {
-				Utils.writeMessageToChannel("Your keyword attempt was not deleted successfully", Authorization.client.getChannelByID(event.getMessage().getChannel().getID()));
+				Utils.writeMessageToChannel(BotConstants.DELETE_KEYWORD_UNSUCCESSFUL, Authorization.client.getChannelByID(event.getMessage().getChannel().getID()));
 			}
 		} else{
 			Utils.writeMessageToChannel(BotConstants.NOT_AUTHORIZED, event.getMessage().getChannel());
@@ -548,7 +574,7 @@ public class BotEventListener {
 		if(success){
 			message = "Logging will no longer occur";
 		} else {
-			message = "Error occured when stopping logging. Please make sure your in the logging channel when using this command";
+			message = BotConstants.DELETE_LOGGING_UNSUCCESSFUL;
 		}
 		resetServerInfo(event.getMessage().getGuild().getID());
 		Utils.writeMessageToChannel(message, event.getMessage().getChannel());
@@ -614,7 +640,7 @@ public class BotEventListener {
 		List<String> eightBall = Utils.getEightBallAnswers();
 		Random random = new Random();
 		int choice = random.nextInt(eightBall.size());
-		Utils.writeMessageToChannel(eightBall.get(choice), event.getMessage().getChannel());
+		Utils.writeMessageToChannel(event.getMessage().getAuthor().mention() + " " + eightBall.get(choice), event.getMessage().getChannel());
 	}
 	
 

@@ -15,7 +15,7 @@ public class BotConstants {
 	public static final String STANDALONE = "standalone";
 	public static final String INCLUDED = "included";
 	
-	public static final String HELP_MESSAGE = "``` `ban - Bans the person tagged \n `commands - Lists the commands \n `giveaway - Starts a giveaway, i think. idk yet \n `keywords - Lists the current keyword filters \n `deletekeyword - Deletes the keyword specified \n `setkeyword - Setups a new keyword filter, use `help setkeyword for specific information on how to use this command \n `kick - Kicks the person from the server \n `levels - Shows a link to the website with all the levels \n `prune - Deletes the last 'X' messages \n `rank - Shows your current rank \n `timeout - Removes the ability to type or talk from the person \n `serverinfo - Shows basic info about the server \n `help - use to find more specific info on each command \n `setlogging - Sets the logging channel to this channel \n `deletelogging - Removes the logging from this channel \n `getlogging - yeah just dont use this \n `playmusic - a work in progress \n `help - pass in a command from above and it will give you more details on its use```";
+	public static final String HELP_MESSAGE = "``` `ban - (admin only) Bans the person tagged \n `commands - Lists the commands \n `giveaway - (admin only) Starts a giveaway, i think. idk yet \n `keywords - Lists the current keyword filters \n `deletekeyword - (admin only) Deletes the keyword specified \n `setkeyword - (admin only) Setups a new keyword filter, use `help setkeyword for specific information on how to use this command \n `kick - (admin only) Kicks the person from the server \n `levels - Shows a link to the website with all the levels \n `prune - (admin only) Deletes the last 'X' messages \n `rank - Shows your current rank \n `timeout - (admin only) Removes the ability to type or talk from the person \n `serverinfo - Shows basic info about the server \n `help - use to find more specific info on each command \n `setlogging - (admin only) Sets the logging channel to this channel \n `deletelogging - (admin only) Removes the logging from this channel \n `getlogging - (admin only) yeah just dont use this \n `playmusic - a work in progress \n `help - pass in a command from above and it will give you more details on its use```";
 
 	public static final String GUILD_ID = "T100_guildId";
 	
@@ -63,6 +63,17 @@ public class BotConstants {
     public static final String BALL19 = "Outlook not so good";
 	public static final String BALL20 = "Very doubtful";
 	
+	public static final String BOT_PREFIX = "`";
+	
+	public static final String SHRUG = "¯\\_(ツ)_/¯";
+	public static final String TABLE_FLIP = "(╯°□°）╯︵ ┻━┻";
+	public static final String UN_TABLE_FLIP = "┬─┬﻿ ノ( ゜-゜ノ)";
+	
+	public static final String UNFINISHED = "This feature is not yet implemented. Please tell WickedKing to get off his lazy ass and finish it";
+	
+	public static final String BAD_KEYWORD = "That keyword command is not correct. Please correct and try again";
+	public static final String DELETE_KEYWORD_UNSUCCESSFUL = "Your keyword attempt was not deleted successfully";
+	public static final String DELETE_LOGGING_UNSUCCESSFUL = "Error occured when stopping logging. Please make sure your in the logging channel when using this command";
 	
 	
 	

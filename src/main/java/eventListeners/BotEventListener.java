@@ -332,7 +332,7 @@ public class BotEventListener {
 			} catch (RateLimitException | DiscordException | MissingPermissionsException e) {
 				logger.error(e);
 			}
-		} else{
+		} else{ //TODO catch parse int error and limit to 100 messages.
 			Utils.writeMessageToChannel(BotConstants.NOT_AUTHORIZED, event.getMessage().getChannel());
 		}
 
@@ -346,7 +346,7 @@ public class BotEventListener {
 	@EventSubscriber
 	public void onRank(RankEvent event){
 		String xp = botDAO.getXPForUser(event.getMessage().getGuild().getID(), event.getMessage().getAuthor().getID());
-		Utils.writeMessageToChannel("@" + event.getMessage().getAuthor() + " " + xp, event.getMessage().getChannel());
+		Utils.writeMessageToChannel(event.getMessage().getAuthor() + " " + xp, event.getMessage().getChannel());
 	}
 
 	/**

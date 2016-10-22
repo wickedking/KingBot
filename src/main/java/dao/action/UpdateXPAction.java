@@ -100,7 +100,7 @@ public class UpdateXPAction {
 	 * @param xp
 	 * @return is successful
 	 */
-	public boolean execute(String guildId, String userId, int xp){
+	public boolean execute(String guildId, String userId, int xp){ //TODO fix this mess
 		createSql();
 		createSQL2();
 		try {

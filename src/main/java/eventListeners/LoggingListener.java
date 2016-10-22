@@ -15,6 +15,7 @@ import sx.blah.discord.handle.impl.events.ChannelUpdateEvent;
 import sx.blah.discord.handle.impl.events.MessageDeleteEvent;
 import sx.blah.discord.handle.impl.events.MessagePinEvent;
 import sx.blah.discord.handle.impl.events.MessageUpdateEvent;
+import sx.blah.discord.handle.impl.events.NickNameChangeEvent;
 import sx.blah.discord.handle.impl.events.RoleCreateEvent;
 import sx.blah.discord.handle.impl.events.RoleDeleteEvent;
 import sx.blah.discord.handle.impl.events.RoleUpdateEvent;
@@ -103,7 +104,10 @@ public class LoggingListener {
 			
 		} else if(!event.getOldChannel().getTopic().equals(event.getNewChannel().getTopic())){
 
-			Utils.writeMessageToChannel("`" + timeFormat.format(new Date()) + "`" + " The channel **#" + event.getOldChannel().getName() +"** topic was changed from __*" + event.getOldChannel().getTopic() + "*__ to __*" + event.getNewChannel().getTopic() +"*__", event.getNewChannel().getGuild().getChannelByID(botListener.getServerInfo(event.getNewChannel().getGuild().getID()).getLoggingChannelId()));
+			Utils.writeMessageToChannel("`" + timeFormat.format(new Date()) + "`" + " The channel **#" + 
+			event.getOldChannel().getName() +"** topic was changed from __*" + event.getOldChannel().getTopic()
+			+ "*__ to __*" + event.getNewChannel().getTopic() +"*__", event.getNewChannel().getGuild().getChannelByID(
+					botListener.getServerInfo(event.getNewChannel().getGuild().getID()).getLoggingChannelId()));
 		} 
 	}
 
@@ -116,11 +120,12 @@ public class LoggingListener {
 		if(event.getMessage().getChannel().getGuild().getChannelByID(botListener.getServerInfo(
 				event.getMessage().getChannel().getGuild().getID()).getLoggingChannelId()) != null){
 
-			Utils.writeMessageToChannel("`" + timeFormat.format(new Date()) + "` __**" +
-					event.getMessage().getAuthor().getName() + "'s**__ Message: `" + event.getMessage() +
-					"` was deleted in __*#" + event.getMessage().getChannel().getName() + "*__", event.getMessage().getChannel().getGuild().getChannelByID(botListener.getServerInfo(
+			Utils.writeMessageToChannel("`" + timeFormat.format(new Date()) + "` **" +
+					event.getMessage().getAuthor().getName() + "'s** message was deleted in *#" + event.getMessage().getChannel().getName() + ": "  +
+				    event.getMessage()
+					, event.getMessage().getChannel().getGuild().getChannelByID(botListener.getServerInfo(
 							event.getMessage().getChannel().getGuild().getID()).getLoggingChannelId()));
-		}
+		}//redo formating done i think
 				
 	}
 
@@ -184,10 +189,10 @@ public class LoggingListener {
 	 */
 	@EventSubscriber
 	public void onRoleUpdate(RoleUpdateEvent event){
-		Utils.writeMessageToChannel("`" + timeFormat.format(new Date()) + "`" +
-				" Role: " + event.getOldRole() + " has been updated to " + event.getNewRole(),
-				event.getGuild().getChannelByID(botListener.getServerInfo(event.getGuild().getID()).getLoggingChannelId()));
-		
+		//Utils.writeMessageToChannel("`" + timeFormat.format(new Date()) + "`" +
+		//		" Role: " + event.getOldRole() + " has been updated to " + event.getNewRole(),
+		//		event.getGuild().getChannelByID(botListener.getServerInfo(event.getGuild().getID()).getLoggingChannelId()));
+		//TODO fix and dont spam. and remove mentions
 	}
 
 	/**
@@ -257,7 +262,7 @@ public class LoggingListener {
 		String message = null;
 		boolean update = false;
 		if(!event.getOldUser().getName().equals(event.getNewUser().getName())){
-			message = event.getOldUser().getName() + " has changed there name to: " +
+			message = event.getOldUser().getName() + " has changed their name to: " +
 					event.getNewUser().getName();
 			
 			update = true;
@@ -277,6 +282,13 @@ public class LoggingListener {
 			}
 		}
 
+	}
+	
+	@EventSubscriber
+	public void onNicknameUpdate(NickNameChangeEvent event){
+		Utils.writeMessageToChannel("`" + timeFormat.format(new Date()) + "` **" + event.getUser().getName()+"'s** nickname has changed from **" +
+	    event.getOldNickname().orElse("*blank*") + "** to **" + event.getNewNickname().orElse("*blank*") + "**",
+		event.getGuild().getChannelByID(botListener.getServerInfo(event.getGuild().getID()).getLoggingChannelId()));
 	}
 
 	/**

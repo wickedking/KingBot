@@ -21,6 +21,7 @@ import dao.action.GetLevelForUsersBelowAction;
 import dao.action.GetLoggingChanAction;
 import dao.action.GetRankForUserAction;
 import dao.action.GetServerInfoAction;
+import dao.action.GetXPLevelForUserAction;
 import dao.action.InsertGuildMessageLoggingAction;
 import dao.action.InsertLoggingChanAction;
 import dao.action.PutKeywordAction;
@@ -187,10 +188,13 @@ public class BotDAO {
 		GetLevelForUsersBelowAction getLevelBelowAction = new GetLevelForUsersBelowAction(getConnection());
 		int totalCount = getLevelBelowAction.execute(guildId);
 		
+		GetXPLevelForUserAction getXpLevelAction = new GetXPLevelForUserAction(getConnection());
+		int level = getXpLevelAction.execute(xp);
+		
 		if(xp == -1 || countAbove == -1 || totalCount == -1){
 			return "XP check failed";
 		}
-		return "Xp: " + xp + " Rank: " + countAbove + "/" + totalCount;
+		return "Total xp: " + xp + ", Level: " + level + ", Rank: " + countAbove + "/" + totalCount + " people";
 	}
 	
 	/**

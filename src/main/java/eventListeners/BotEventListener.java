@@ -19,19 +19,26 @@ import constants.BotConstants;
 import dao.BotDAO;
 import details.ServerInfo;
 import events.AboutEvent;
+import events.AdminCommandsEvent;
+import events.AdviceEvent;
 import events.BanEvent;
 import events.CommandsEvent;
+import events.CreatePollEvent;
 import events.DeleteKeywordEvent;
 import events.DeleteLoggingEvent;
 import events.EightBallEvent;
 import events.GetLoggingEvent;
+import events.GetPollEvent;
 import events.GiveawayEvent;
 import events.HelpEvent;
+import events.InsultEvent;
+import events.JokeEvent;
 import events.KeywordCheckEvent;
 import events.KeywordEvent;
 import events.KickEvent;
 import events.LevelsEvent;
 import events.PlayMusicEvent;
+import events.PrivateMessageEvent;
 import events.PruneEvent;
 import events.RankEvent;
 import events.ServerInfoEvent;
@@ -47,6 +54,7 @@ import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.obj.IGuild;
+import sx.blah.discord.handle.obj.IPrivateChannel;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.MessageList;
 import sx.blah.discord.util.MissingPermissionsException;
@@ -60,19 +68,19 @@ import util.Utils;
  *
  */
 public class BotEventListener {
-	
+
 	private static final Logger logger = LogManager.getLogger(BotEventListener.class);
-	
+
 	/**
 	 * Reference to the Dao layer
 	 */
 	private BotDAO botDAO = new BotDAO();
-	
+
 	/**
 	 * All the servers with the current info
 	 */
 	Map<String, ServerInfo> servers = new HashMap<>();
-	
+
 	/**
 	 * returns the serverinfo for the given server
 	 * @param guildId
@@ -91,7 +99,7 @@ public class BotEventListener {
 		logger.warn("ready method");
 		setup();
 	}
-	
+
 	/**
 	 * setups the data needed on construction
 	 */
@@ -101,9 +109,9 @@ public class BotEventListener {
 			logger.warn(server.getGuildId());
 			server.setLoggingChannelId(botDAO.getLoggingChannel(server.getGuildId()));
 		}
-		
+
 	}
-	
+
 	/**
 	 * Refresh the data from the server based on data update
 	 * 
@@ -138,6 +146,10 @@ public class BotEventListener {
 		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "rank")){
 			event.getClient().getDispatcher().dispatch(new RankEvent(event.getMessage()));
 
+		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "getpoll")) {
+			logger.warn("creating poll event");
+			event.getClient().getDispatcher().dispatch(new GetPollEvent(event.getMessage()));
+
 		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "levels")){
 			event.getClient().getDispatcher().dispatch(new LevelsEvent(event.getMessage()));
 
@@ -164,46 +176,61 @@ public class BotEventListener {
 
 		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "setkeyword ")) {
 			event.getClient().getDispatcher().dispatch(new SetKeywordEvent(event.getMessage()));
-			
+
 		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "deletekeyword ")) {
 			event.getClient().getDispatcher().dispatch(new DeleteKeywordEvent(event.getMessage()));
-			
+
 		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "setlogging")) {
 			event.getClient().getDispatcher().dispatch(new SetLoggingEvent(event.getMessage()));
-			
+
 		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "deletelogging")) {
 			event.getClient().getDispatcher().dispatch(new DeleteLoggingEvent(event.getMessage()));
-			
+
 		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "getlogging")) {
 			event.getClient().getDispatcher().dispatch(new GetLoggingEvent(event.getMessage()));
-			
+
 		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "playmusic")) {
 			event.getClient().getDispatcher().dispatch(new PlayMusicEvent(event.getMessage()));
-			
+
 		} else if (event.getMessage().getContent().startsWith("/shrug")) {
 			event.getClient().getDispatcher().dispatch(new ShrugEvent(event.getMessage()));
-			
+
 		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "about")) {
 			event.getClient().getDispatcher().dispatch(new AboutEvent(event.getMessage()));
-			
+
 		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "help")) {
 			event.getClient().getDispatcher().dispatch(new HelpEvent(event.getMessage()));
-			
+
 		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "8ball")) {
 			event.getClient().getDispatcher().dispatch(new EightBallEvent(event.getMessage()));
-			
+
 		} else if (event.getMessage().getContent().startsWith("/tableflip")) {
 			event.getClient().getDispatcher().dispatch(new TableFlipEvent(event.getMessage()));
-			
+
 		} else if (event.getMessage().getContent().startsWith("/unflip")) {
 			event.getClient().getDispatcher().dispatch(new UnTableFlipEvent(event.getMessage()));
-			
-		} else {
+
+		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "joke")) {
+			event.getClient().getDispatcher().dispatch(new JokeEvent(event.getMessage()));
+
+		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "insult")) {
+			event.getClient().getDispatcher().dispatch(new InsultEvent(event.getMessage()));
+
+		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "advice")) {
+			event.getClient().getDispatcher().dispatch(new AdviceEvent(event.getMessage()));
+
+		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "privatemessage")) {
+			event.getClient().getDispatcher().dispatch(new PrivateMessageEvent(event.getMessage()));
+
+		}  else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "admincommands")) {
+			event.getClient().getDispatcher().dispatch(new AdminCommandsEvent(event.getMessage()));
+
+		}  else {
 			event.getClient().getDispatcher().dispatch(new KeywordCheckEvent(event.getMessage()));
 		}
 
 	}
-	
+
 	/**
 	 * Writes the shrug ascii out to the channel
 	 * @param event
@@ -212,7 +239,7 @@ public class BotEventListener {
 	public void onShrug(ShrugEvent event){
 		Utils.writeMessageToChannel(BotConstants.SHRUG, event.getMessage().getChannel());
 	}
-	
+
 	/**
 	 * Writes the shrug ascii out to the channel
 	 * @param event
@@ -221,8 +248,8 @@ public class BotEventListener {
 	public void onTableFlip(TableFlipEvent event){
 		Utils.writeMessageToChannel(BotConstants.TABLE_FLIP, event.getMessage().getChannel());
 	}
-	
-	
+
+
 	/**
 	 * Writes the shrug ascii out to the channel
 	 * @param event
@@ -272,25 +299,7 @@ public class BotEventListener {
 
 	}
 
-	/**
-	 * Posts the commands in the channel requested
-	 * @param event
-	 */
-	@EventSubscriber
-	public void onCommands(CommandsEvent event){
-		Utils.writeMessageToChannel(event.getMessage().getAuthor().mention() + BotConstants.HELP_MESSAGE, event.getMessage().getChannel());
-	}
 
-	/**
-	 * Handles the giveaways
-	 * TODO
-	 * @param event
-	 */
-	@EventSubscriber
-	public void onGiveaway(GiveawayEvent event){
-		
-		Utils.writeMessageToChannel(BotConstants.UNFINISHED, event.getMessage().getChannel());
-	}
 
 	/**
 	 * Handles a timeout for the user mentioned
@@ -368,7 +377,7 @@ public class BotEventListener {
 		Utils.writeMessageToChannel("```Server Name: " + server.getName() + "\n Owner: " + server.getOwner().getName() + "\n Number of Channels: " + server.getChannels().size() + "\n Server creation date: " + server.getCreationDate() + "\n Number of Roles: " + server.getRoles().size() + "\n Number of users: " + server.getUsers().size() + "\n Number of Voice Channels: " + server.getVoiceChannels().size() + "```", Authorization.client.getChannelByID(event.getMessage().getChannel().getID()));
 
 	}
-	
+
 	/**
 	 * Posts the keywords that have been setup for a filter
 	 * @param event
@@ -377,6 +386,7 @@ public class BotEventListener {
 	public void onGetKeywords(KeywordEvent event){
 
 		boolean isAdmin = Utils.isBotAdmin(event.getMessage().getAuthor(), event.getMessage().getGuild().getOwner(), event.getMessage().getAuthor().getRolesForGuild(event.getMessage().getGuild()));
+		String message = "";
 		if(isAdmin){
 			List<Keyword> keywords = botDAO.getKeywords(event.getMessage().getGuild().getID());
 			if(!keywords.isEmpty()){
@@ -389,12 +399,20 @@ public class BotEventListener {
 					sb.append(" \n");
 
 				}
-				Utils.writeMessageToChannel(sb.toString(), event.getMessage().getChannel());
+				message = sb.toString();
 			} else {
-				Utils.writeMessageToChannel("No keywords are set for this server", event.getMessage().getChannel());
+				message = "No keywords are set for this server";
 			}
 		} else {
-			Utils.writeMessageToChannel(BotConstants.NOT_AUTHORIZED, event.getMessage().getChannel());
+			message = BotConstants.NOT_AUTHORIZED;
+		}
+		
+		try {
+			IPrivateChannel channel = Authorization.client.getOrCreatePMChannel(event.getMessage().getAuthor());
+			Utils.writeMessageToChannel(message, channel);
+
+		} catch (DiscordException | RateLimitException e) {
+			logger.error(e);
 		}
 
 	}
@@ -429,13 +447,13 @@ public class BotEventListener {
 			} else {
 				Utils.writeMessageToChannel(BotConstants.BAD_KEYWORD, Authorization.client.getChannelByID(event.getMessage().getChannel().getID()));
 			}
-			
+
 		} else{
 			Utils.writeMessageToChannel(BotConstants.NOT_AUTHORIZED, event.getMessage().getChannel());
 		}
-		
+
 	}
-	
+
 	/**
 	 * validates the keyword created
 	 * @param keyword
@@ -445,7 +463,7 @@ public class BotEventListener {
 		String action2 = keyword.getAction2();
 		boolean action1Success = Utils.validateAction1(action1);
 		boolean action2Success = Utils.validateAction2(action2);
-		
+
 		if(action1Success && action2Success){
 			return true;
 			//TODO is this what i want to do here?
@@ -453,7 +471,7 @@ public class BotEventListener {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Deletes the specified keyword
 	 * @param event
@@ -475,9 +493,9 @@ public class BotEventListener {
 		} else{
 			Utils.writeMessageToChannel(BotConstants.NOT_AUTHORIZED, event.getMessage().getChannel());
 		}
-		
+
 	}
-	
+
 	/**
 	 * Checks message for keywords and runs action associated
 	 * @param event
@@ -494,7 +512,7 @@ public class BotEventListener {
 			}
 		}
 	}
-	
+
 	/**
 	 * Evaluates the message according to the keyword rules
 	 * @param keyword
@@ -547,12 +565,12 @@ public class BotEventListener {
 			} else {
 				return;
 			}
-			
+
 		} else {
 			logger.error("hmm something happened");
 		}
 	}
-	
+
 	/**
 	 * Updates the xp of the user
 	 * @param event
@@ -562,7 +580,7 @@ public class BotEventListener {
 		Random rand = new Random();
 		botDAO.updateUserXP(event.getMessage().getGuild().getID(), event.getMessage().getAuthor().getID(), rand.nextInt(11) + 20);
 	}
-	
+
 	/**
 	 * Delete the logging channel saved
 	 * @param event
@@ -579,7 +597,7 @@ public class BotEventListener {
 		resetServerInfo(event.getMessage().getGuild().getID());
 		Utils.writeMessageToChannel(message, event.getMessage().getChannel());
 	}
-	
+
 	/**
 	 * Sets the Logging channel
 	 * @param event
@@ -594,7 +612,7 @@ public class BotEventListener {
 		}
 		resetServerInfo(event.getMessage().getGuild().getID());
 	}
-	
+
 	/**
 	 * Returns teh logging channel
 	 * @param event
@@ -602,9 +620,9 @@ public class BotEventListener {
 	@EventSubscriber
 	public void onGetLogging(GetLoggingEvent event){
 		botDAO.getLoggingChannel(event.getMessage().getGuild().getID());
-		
+
 	}
-	
+
 	/**
 	 * Plays music
 	 * TODO fix
@@ -619,9 +637,9 @@ public class BotEventListener {
 		} catch (IOException | UnsupportedAudioFileException e) {
 			logger.error(e);
 		}
-			
+
 	}
-	
+
 	/**
 	 * Used to provide basic information about the bot.
 	 * @param event
@@ -630,7 +648,7 @@ public class BotEventListener {
 	public void onAbout(AboutEvent event){
 		Utils.writeMessageToChannel(BotConstants.ABOUT_MESSAGE, event.getMessage().getChannel());
 	}
-	
+
 	/**
 	 * Provides an 8ball answer to a question
 	 * @param event
@@ -642,7 +660,111 @@ public class BotEventListener {
 		int choice = random.nextInt(eightBall.size());
 		Utils.writeMessageToChannel(event.getMessage().getAuthor().mention() + " " + eightBall.get(choice), event.getMessage().getChannel());
 	}
+
+	/**
+	 * Provides a joke
+	 * @param event
+	 */
+	@EventSubscriber
+	public void onJoke(JokeEvent event){
+		String joke = Utils.getJoke();
+		Utils.writeMessageToChannel(joke, event.getMessage().getChannel());
+	}
+
+	/**
+	 * Posts usually (not) helpful advice
+	 * @param event
+	 */
+	@EventSubscriber
+	public void onAdvice(AdviceEvent event){
+		Utils.writeMessageToChannel(Utils.getAdvice(), event.getMessage().getChannel());
+	}
+
+	/**
+	 * Posts a somewhat nice insult
+	 * @param event
+	 */
+	@EventSubscriber
+	public void onInsult(InsultEvent event){
+		Utils.writeMessageToChannel(Utils.getInsult(), event.getMessage().getChannel());
+	}
+
+	/**
+	 * Posts the commands in the channel requested
+	 * @param event
+	 */
+	@EventSubscriber
+	public void onCommands(CommandsEvent event){
+		try {
+			IPrivateChannel channel = Authorization.client.getOrCreatePMChannel(event.getMessage().getAuthor());
+			Utils.writeMessageToChannel(BotConstants.HELP_MESSAGE, channel);
+			Utils.writeMessageToChannel(event.getMessage().getAuthor().mention() + " The commands have been messaged to you", event.getMessage().getChannel());
+
+		} catch (DiscordException | RateLimitException e) {
+			logger.error(e);
+		}
+
+	}
 	
+	/**
+	 * Private message the user with the String of admin commands
+	 * @param event
+	 */
+	@EventSubscriber
+	public void onAdminCommands(AdminCommandsEvent event){
+		try {
+			IPrivateChannel channel = Authorization.client.getOrCreatePMChannel(event.getMessage().getAuthor());
+			Utils.writeMessageToChannel(BotConstants.ADMIN_HELP_MESSAGE, channel);
+			Utils.writeMessageToChannel(event.getMessage().getAuthor().mention() + " The commands have been messaged to you", event.getMessage().getChannel());
+
+		} catch (DiscordException | RateLimitException e) {
+			logger.error(e);
+		}
+	}
+	
+	@EventSubscriber
+	public void onCreatePoll(CreatePollEvent event){
+		// https://strawpoll.me/api/v2/polls
+		Utils.createPoll(event);
+	}
+	
+	@EventSubscriber
+	public void onGetPoll(GetPollEvent event){
+		logger.warn("in event listener");
+		Utils.getPoll(event.getMessage().getContent());
+	}
+	
+	
+	
+	
+	/**
+	 * Posts the commands in the channel requested
+	 * @param event
+	 */
+//	@EventSubscriber
+//	public void onCommands(CommandsEvent event){
+//		//Utils.writeMessageToChannel(event.getMessage().getAuthor().mention() + BotConstants.HELP_MESSAGE, event.getMessage().getChannel());
+////		IPrivateChannel channel = Authorization.client.getOrCreatePMChannel(event.getMessage().getAuthor());
+////		Utils.writeMessageToChannel("test", channel);
+//		try {
+//			IPrivateChannel channel = Authorization.client.getOrCreatePMChannel(event.getMessage().getAuthor());
+//			Utils.writeMessageToChannel(BotConstants.HELP_MESSAGE + BotConstants.HELP_MESSAGE, channel);
+//
+//		} catch (DiscordException | RateLimitException e) {
+//			logger.error(e);
+//		}
+//	}
+
+//	/**
+//	 * Handles the giveaways
+//	 * TODO
+//	 * @param event
+//	 */
+//	@EventSubscriber
+//	public void onGiveaway(GiveawayEvent event){
+//
+//		Utils.writeMessageToChannel(BotConstants.UNFINISHED, event.getMessage().getChannel());
+//	}
 
 
 }

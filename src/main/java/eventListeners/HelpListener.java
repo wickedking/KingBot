@@ -35,18 +35,6 @@ public class HelpListener {
 		} else if (message.startsWith("rank")){
 			output = BotConstants.HELP_RANK ;
 
-		} else if (message.startsWith("levels")){
-			output = BotConstants.HELP_LEVEL ;
-
-		} else if (message.startsWith("keywords")) {
-			output = BotConstants.HELP_KEYWORDS ;
-
-		} else if (message.startsWith("timeout ")) {
-			output = BotConstants.HELP_TIMEOUT ;
-
-		} else if (message.startsWith("giveaway")) {
-			output = BotConstants.HELP_GIVEAWAY ;
-
 		} else if (message.startsWith("commands")) {
 			output = BotConstants.HELP_COMMANDS ;
 
@@ -59,20 +47,6 @@ public class HelpListener {
 		} else if (message.startsWith("serverinfo")) {
 			output = BotConstants.HELP_SERVERINFO ;
 
-		} else if (message.startsWith("setkeyword ")) {
-			output = BotConstants.HELP_SETKEYWORD ;
-
-		} else if (message.startsWith("deletekeyword ")) {
-			output = BotConstants.HELP_DELETEKEYWORD ;
-
-		} else if (message.startsWith("setlogging")) {
-			output = BotConstants.HELP_SETLOGGING ;
-
-		} else if (message.startsWith("deletelogging")) {
-			output = BotConstants.HELP_DELETELOGGING ;
-
-		} else if (message.startsWith("getlogging")) {
-			output = BotConstants.HELP_GETLOGGING ;
 
 		} else if (message.startsWith("playmusic")) {
 			output = BotConstants.HELP_PLAYMUSIC ;

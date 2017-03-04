@@ -38,6 +38,8 @@ public class Authorization {
 	 */
 	public static IDiscordClient client;	
 	
+	private static final String GUILD_ID = "129063193493372929";
+	
 	private static final List<String> GAME_LIST = Arrays.asList("With the King", "Adulting", "outside", "with a friend", "breaking things", "nothing", "don't look at me");
 	
 	private Authorization(){
@@ -53,8 +55,8 @@ public class Authorization {
 		logger.warn("Hello World");
 		client = new ClientBuilder().withToken(HiddenConstants.BOTTOKEN).login();
 		BotEventListener listener = new BotEventListener();
-		client.getDispatcher().registerListener(listener);
-		client.getDispatcher().registerListener(new LoggingListener(listener));
+		client.getDispatcher().registerListener(listener);		
+		client.getDispatcher().registerListener(new LoggingListener(listener, client.getGuildByID(GUILD_ID)));
 		client.getDispatcher().registerListener(new HelpListener());
 		
 		final ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();

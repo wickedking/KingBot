@@ -1,5 +1,6 @@
 package eventListeners;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
@@ -7,6 +8,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Random;
 
+import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import org.apache.logging.log4j.LogManager;
@@ -16,6 +18,9 @@ import constants.BotConstants;
 import events.AboutEvent;
 import events.AdminCommandsEvent;
 import events.AdviceEvent;
+import events.AudioJoinEvent;
+import events.AudioPlayEvent;
+import events.AudioStopEvent;
 import events.BanEvent;
 import events.CommandsEvent;
 import events.CreatePollEvent;
@@ -27,10 +32,12 @@ import events.HelpEvent;
 import events.InsultEvent;
 import events.JokeEvent;
 import events.KickEvent;
+import events.LeaveChannelEvent;
+import events.LennyEvent;
+import events.MiddleFingerEvent;
 import events.PlayMusicEvent;
 import events.PrivateMessageEvent;
 import events.PruneEvent;
-import events.SetLoggingEvent;
 import events.ShrugEvent;
 import events.TableFlipEvent;
 import events.TimeoutEvent;
@@ -58,6 +65,8 @@ import util.Utils;
 public class BotEventListener {
 
 	private static final Logger logger = LogManager.getLogger(BotEventListener.class);
+	
+	private static AudioPlayer AUDIO_PLAYER = null;
 
 	/**
 	 * MessageReceivedEvent listener method, parses message and fires new event if needed
@@ -69,7 +78,6 @@ public class BotEventListener {
 		logger.warn(event.getMessage().getAuthor().getID());
 		LocalTime time = LocalTime.now();
 		logger.warn(time.getHour());
-		//botDAO.updateLoggingForGuild(loggingBean);
 
 		//TODO refactor, please just refactor this
 		if(event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "prune")){
@@ -97,8 +105,8 @@ public class BotEventListener {
 		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "getlogging")) {
 			event.getClient().getDispatcher().dispatch(new GetLoggingEvent(event.getMessage()));
 
-		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "playmusic")) {
-			event.getClient().getDispatcher().dispatch(new PlayMusicEvent(event.getMessage()));
+//		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "playmusic")) {
+//			event.getClient().getDispatcher().dispatch(new PlayMusicEvent(event.getMessage()));
 
 		} else if (event.getMessage().getContent().startsWith("/shrug")) {
 			event.getClient().getDispatcher().dispatch(new ShrugEvent(event.getMessage()));
@@ -135,6 +143,28 @@ public class BotEventListener {
 			
 		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "serverinfo")) {
 			event.getClient().getDispatcher().dispatch(new GetServerInfoEvent(event.getMessage()));
+			
+		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "createpoll")) {
+			event.getClient().getDispatcher().dispatch(new CreatePollEvent(event.getMessage()));
+			
+		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "lenny") || event.getMessage().getContent().startsWith("/lenny")) {
+			event.getClient().getDispatcher().dispatch(new LennyEvent(event.getMessage()));
+			
+		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "middlefinger") || event.getMessage().getContent().startsWith("/middlefinger")) {
+			event.getClient().getDispatcher().dispatch(new MiddleFingerEvent(event.getMessage()));
+			
+		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "join")) {
+			event.getClient().getDispatcher().dispatch(new AudioJoinEvent(event.getMessage()));
+			
+		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "playmusic")) {
+			event.getClient().getDispatcher().dispatch(new AudioPlayEvent(event.getMessage()));
+			
+		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "stopmusic")) {
+			event.getClient().getDispatcher().dispatch(new AudioStopEvent(event.getMessage()));
+			
+		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "leavechannel")) {
+			event.getClient().getDispatcher().dispatch(new LeaveChannelEvent(event.getMessage()));
+			
 		}
 
 	}
@@ -262,17 +292,17 @@ public class BotEventListener {
 	 * TODO fix
 	 * @param event
 	 */
-	@EventSubscriber
-	public void onPlayMusic(PlayMusicEvent event){
-		AudioPlayer player = AudioPlayer.getAudioPlayerForGuild(event.getMessage().getGuild());
-		try {
-			player.queue(new URL("https://www.youtube.com/watch?v=308KpFZ4cT8"));
-			logger.warn("Playing music maybe");
-		} catch (IOException | UnsupportedAudioFileException e) {
-			logger.error(e);
-		}
+//	@EventSubscriber
+//	public void onPlayMusic(PlayMusicEvent event){
+//		AudioPlayer player = AudioPlayer.getAudioPlayerForGuild(event.getMessage().getGuild());
+//		try {
+//			player.queue(new URL("https://www.youtube.com/watch?v=308KpFZ4cT8"));
+//			logger.warn("Playing music maybe");
+//		} catch (IOException | UnsupportedAudioFileException e) {
+//			logger.error(e);
+//		}
 
-	}
+//	}
 
 	/**
 	 * Used to provide basic information about the bot.
@@ -356,19 +386,30 @@ public class BotEventListener {
 		}
 	}
 	
+	/**
+	 * Create a poll on strawpoll.me
+	 * @param event
+	 */
 	@EventSubscriber
 	public void onCreatePoll(CreatePollEvent event){
 		// https://strawpoll.me/api/v2/polls
 		Utils.createPoll(event);
 	}
 	
+	/**
+	 * Used to return the poll link
+	 * @param event
+	 */
 	@EventSubscriber
 	public void onGetPoll(GetPollEvent event){
 		logger.warn("in event listener");
 		Utils.getPoll(event.getMessage().getContent());
 	}
 	
-	
+	/**
+	 * Get basic info about the server
+	 * @param event
+	 */
 	@EventSubscriber
 	public void onGetServerInfo(GetServerInfoEvent event){
 		IGuild guild = event.getMessage().getGuild();
@@ -380,11 +421,73 @@ public class BotEventListener {
 		int totalUsers = guild.getTotalMemberCount();
 		VerificationLevel verificationLevel = guild.getVerificationLevel();
 		int voiceChannelNumber = guild.getVoiceChannels().size();
+		int numberChannels = guild.getChannels().size();
 		int numberWebhooks = guild.getWebhooks().size();
+		int emojis = guild.getEmojis().size();
 		
-		Utils.writeMessageToChannel("Creation date: " + creationTime + "\n Icon: " + icon + "\n GuildName: " + guildName + "\n Owner: " + owner + "\n Region: " + region + "\n Total Users: " + totalUsers + "\n Verification level: " + verificationLevel + "\n WebHooks: " + numberWebhooks, event.getMessage().getChannel());
+		Utils.writeMessageToChannel("```Creation date: " + creationTime + "\n Icon: " + icon + "\n GuildName: " + guildName + "\n Owner: " + owner.getName() + "\n Region: " 
+		+ region + "\n Total Users: " + totalUsers + "\n Verification level: " + verificationLevel + "\n WebHooks: " + numberWebhooks 
+		+ "\n Number of Text channels: " + numberChannels + "\n Number voice channels: " + voiceChannelNumber + "\n Number of custom Emojis " + emojis + "```", event.getMessage().getChannel());
+	}
+	
+	/**
+	 * used to write lenny face
+	 * @param event
+	 */
+	@EventSubscriber
+	public void onLenny(LennyEvent event){
+		Utils.writeMessageToChannel("( ͡° ͜ʖ ͡°)", event.getMessage().getChannel());
 	}
 
-
+	/**
+	 * Used to write middle finger ascii to channel
+	 * @param event
+	 */
+	@EventSubscriber
+	public void onMiddleFinger(MiddleFingerEvent event){
+		Utils.writeMessageToChannel("╭∩╮(Ο_Ο)╭∩╮", event.getMessage().getChannel());
+	}
+	
+	/**
+	 * Used to join the audio channel
+	 * @param event
+	 */
+	@EventSubscriber
+	public void onAudioJoin(AudioJoinEvent event){
+		AUDIO_PLAYER = AudioPlayer.getAudioPlayerForGuild(event.getMessage().getGuild());
+		try {
+			event.getClient().getVoiceChannels().get(0).join();
+		} catch (MissingPermissionsException e) {
+			e.printStackTrace();
+		}
+		
+		//190868309313323008
+	}
+	
+	@EventSubscriber
+	public void onAudioPlayer(AudioPlayEvent event){
+		System.out.println("in audio player method");
+		try {
+			AUDIO_PLAYER.queue(new File("C:\\Users\\King\\Desktop\\Epic Sax Guy Loop.mp3"));
+			//SUPER LAGGY PLEASE FIX
+			//AUDIO_PLAYER.queue(new URL("https://youtu.be/kxopViU98Xo"));
+			
+		} catch (IOException | UnsupportedAudioFileException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@EventSubscriber
+	public void onAudioStop(AudioStopEvent event){
+		System.out.println("in audio stop method");
+		AUDIO_PLAYER.togglePause();
+	}
+	
+	@EventSubscriber
+	public void onLeaveChannel(LeaveChannelEvent event) {
+		System.out.println("in audio leaving method");
+		event.getClient().getConnectedVoiceChannels().get(0).leave();
+	}
+	
 }
 

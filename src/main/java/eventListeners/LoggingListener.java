@@ -264,6 +264,8 @@ public class LoggingListener {
 					event.getOldUser().getAvatarURL() + "\n **After:** " + event.getNewUser().getAvatarURL();
 
 			update = true;
+		} else {
+			return;
 		}
 		if(update){
 			Utils.writeMessageToChannel(message, GUILD.getChannelByID(LOGGING_CHANNEL));

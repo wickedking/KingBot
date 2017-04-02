@@ -1,10 +1,18 @@
 package util;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -171,27 +179,17 @@ public class Utils {
 	 * @return List of Strings of 8 ball answers
 	 */
 	public static List<String> getEightBallAnswers(){
-		return Arrays.asList(BotConstants.BALL1,
-				BotConstants.BALL2,
-				BotConstants.BALL3,
-				BotConstants.BALL4,
-				BotConstants.BALL5,
-				BotConstants.BALL6,
-				BotConstants.BALL7,
-				BotConstants.BALL8,
-				BotConstants.BALL9,
-				BotConstants.BALL10,
-				BotConstants.BALL11,
-				BotConstants.BALL12,
-				BotConstants.BALL13,
-				BotConstants.BALL14,
-				BotConstants.BALL15,
-				BotConstants.BALL16,
-				BotConstants.BALL17,
-				BotConstants.BALL18,
-				BotConstants.BALL19,
-				BotConstants.BALL20
-				);
+		
+		
+		BufferedReader br = new BufferedReader(new InputStreamReader(ClassLoader.getSystemClassLoader().getResourceAsStream("8ball.txt")));
+		List<String> list =  br.lines().collect(Collectors.toList());
+		try {
+			br.close();
+		} catch (IOException e) {
+			logger.warn(e.getStackTrace());
+		}
+		return list;
+		
 	}
 
 
@@ -231,32 +229,15 @@ public class Utils {
 	 */
 	private static List<String> constructJokeList(){
 		List<String> jokeList = new ArrayList<String>();
-		jokeList.add(BotConstants.joke1);
-		jokeList.add(BotConstants.joke2);
-		jokeList.add(BotConstants.joke3);
-		jokeList.add(BotConstants.joke4);
-		jokeList.add(BotConstants.joke5);
-		jokeList.add(BotConstants.joke6);
-		jokeList.add(BotConstants.joke7);
-		jokeList.add(BotConstants.joke8);
-		jokeList.add(BotConstants.joke9);
-		jokeList.add(BotConstants.joke10);
-		jokeList.add(BotConstants.joke11);
-		jokeList.add(BotConstants.joke12);
-		jokeList.add(BotConstants.joke13);
-		jokeList.add(BotConstants.joke14);
-		jokeList.add(BotConstants.joke15);
-		jokeList.add(BotConstants.joke16);
-		jokeList.add(BotConstants.joke17);
-		jokeList.add(BotConstants.joke18);
-		jokeList.add(BotConstants.joke19);
-		jokeList.add(BotConstants.joke20);
-		jokeList.add(BotConstants.joke21);
-		jokeList.add(BotConstants.joke22);
-		jokeList.add(BotConstants.joke23);
-		jokeList.add(BotConstants.joke24);
-		jokeList.add(BotConstants.joke25);
 
+		BufferedReader br = new BufferedReader(new InputStreamReader(ClassLoader.getSystemClassLoader().getResourceAsStream("jokes.txt")));
+		jokeList = br.lines().collect(Collectors.toList());
+		try {
+			br.close();
+		} catch (IOException e) {
+			logger.warn(e.getStackTrace());
+		}
+		
 		return jokeList;
 	}
 	
@@ -267,29 +248,13 @@ public class Utils {
 	private static List<String> constructInsultList(){
 		List<String> insultList = new ArrayList<String>();
 		
-		insultList.add(BotConstants.insult1);
-		insultList.add(BotConstants.insult2);
-		insultList.add(BotConstants.insult3);
-		insultList.add(BotConstants.insult4);
-		insultList.add(BotConstants.insult5);
-		insultList.add(BotConstants.insult6);
-		insultList.add(BotConstants.insult7);
-		insultList.add(BotConstants.insult8);
-		insultList.add(BotConstants.insult9);
-		insultList.add(BotConstants.insult10);
-		insultList.add(BotConstants.insult11);
-		insultList.add(BotConstants.insult12);
-		insultList.add(BotConstants.insult13);
-		insultList.add(BotConstants.insult14);
-		insultList.add(BotConstants.insult15);
-		insultList.add(BotConstants.insult16);
-		insultList.add(BotConstants.insult17);
-		insultList.add(BotConstants.insult18);
-		insultList.add(BotConstants.insult19);
-		insultList.add(BotConstants.insult20);
-		insultList.add(BotConstants.insult21);
-		insultList.add(BotConstants.insult22);
-		insultList.add(BotConstants.insult23);
+		BufferedReader br = new BufferedReader(new InputStreamReader(ClassLoader.getSystemClassLoader().getResourceAsStream("insults.txt")));
+		insultList = br.lines().collect(Collectors.toList());
+		try {
+			br.close();
+		} catch (IOException e) {
+			logger.warn(e.getStackTrace());
+		}
 		
 		return insultList;
 
@@ -301,17 +266,14 @@ public class Utils {
 	 */
 	private static List<String> constructAdvice() {
 		List<String> adviceList = new ArrayList<String>();
-		adviceList.add(BotConstants.advice1);
-		adviceList.add(BotConstants.advice2);
-		adviceList.add(BotConstants.advice3);
-		adviceList.add(BotConstants.advice4);
-		adviceList.add(BotConstants.advice5);
-		adviceList.add(BotConstants.advice6);
-		adviceList.add(BotConstants.advice7);
-		adviceList.add(BotConstants.advice8);
-		adviceList.add(BotConstants.advice9);
-		adviceList.add(BotConstants.advice10);
-		adviceList.add(BotConstants.advice11);
+		
+		BufferedReader br = new BufferedReader(new InputStreamReader(ClassLoader.getSystemClassLoader().getResourceAsStream("advice.txt")));
+		adviceList = br.lines().collect(Collectors.toList());
+		try {
+			br.close();
+		} catch (IOException e) {
+			logger.warn(e.getStackTrace());
+		}
 		
 		return adviceList;
 	}
@@ -331,7 +293,7 @@ public class Utils {
 			System.out.println(jsonResponse.getBody().toString());
 		} catch (UnirestException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.warn(e.getStackTrace());
 		}
 	}
 

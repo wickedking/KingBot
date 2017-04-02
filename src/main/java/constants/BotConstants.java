@@ -30,28 +30,6 @@ public class BotConstants {
 	public static final String HELP_SERVERINFO = "``` `serverinfo \n Will show basic stats about the server. \n \n Example: `serverinfo ```";
 	public static final String HELP_PLAYMUSIC = "``` `playmusic \n Will be used in the future once WickedKing finishes the code to make this work. For now just sit back and wish for this feature, and maybe it will come true ```";
 	public static final String HELP_ABOUT = "``` `about \n Displays a short about message for this bot. \n \n Example: `about ```";
-		
-
-	public static final String BALL1 = "It is certain";
-	public static final String BALL2 = "It is decidedly so";
-	public static final String BALL3 = "Without a doubt";
-	public static final String BALL4 = "Yes, definitely";
-	public static final String BALL5 = "You may rely on it";
-	public static final String BALL6 = "As I see it, yes";
-	public static final String BALL7 = "Most likely";
-	public static final String BALL8 = "Outlook good";
-	public static final String BALL9 = "Yes";
-	public static final String BALL10 = "Signs point to yes";
-	public static final String BALL11 = "Reply hazy try again";
-	public static final String BALL12 = "Ask again later";
-	public static final String BALL13 = "Better not tell you now";
-	public static final String BALL14 = "Cannot predict now";
-	public static final String BALL15 = "Concentrate and ask again";
-	public static final String BALL16 = "Don't count on it";
-	public static final String BALL17 = "My reply is no";
-	public static final String BALL18 = "My sources say no";
-    public static final String BALL19 = "Outlook not so good";
-	public static final String BALL20 = "Very doubtful";
 	
 	public static final String BOT_PREFIX = "`";
 	
@@ -61,69 +39,6 @@ public class BotConstants {
 	
 	public static final String UNFINISHED = "This feature is not yet implemented. Please tell WickedKing to get off his lazy ass and finish it";
 	
-	
-	public static final String joke1 = "She was only a whiskey-maker, but he loved her still.";
-	public static final String joke2 = "Why do chicken coops only have two doors? Because if they had four, they would be chicken sedans!";
-	public static final String joke3 = "How do you make holy water? You boil the hell out of it.";
-	public static final String joke4 = "What’s Forrest Gump’s password? 1forrest1";
-	public static final String joke5 = "I tried to catch some fog, but I mist.";
-	public static final String joke6 = "England has no kidney bank, but it does have a Liverpool.";
-	public static final String joke7 = "Velcro, what a rip off!";
-	public static final String joke8 = "A dyslexic man walks into a bra.";
-	public static final String joke9 = "Deja Moo: The feeling that you've heard this bull before.";
-	public static final String joke10 = "Two cows are standing next to each other in a field. Daisy says to Dolly, \"I was artificially inseminated this morning.\" \"I don't believe you,\" says Dolly. \"It's true, no bull!\" exclaims Daisy.";
-	public static final String joke11 = "Did you hear about the Buddhist who refused Novocain during a root canal? His goal: transcend dental medication.";
-	public static final String joke12 = "And finally, there was the person who sent ten different puns to friends, with the hope that at least one of the puns would make them laugh. No pun in ten did.";
-	public static final String joke13 = "I'd tell you a chemistry joke but I know I wouldn't get a reaction.";
-	public static final String joke14 = "Yesterday I accidentally swallowed some food coloring. The doctor says I'm OK, but I feel like I've dyed a little inside.";
-	public static final String joke15 = "Did you hear about the guy who got hit in the head with a can of soda? He was lucky it was a soft drink.";
-	public static final String joke16 = "Have you ever tried to eat a clock? It's very time consuming.";
-	public static final String joke17 = "I can't believe I got fired from the calendar factory. All I did was take a day off.";
-	public static final String joke18 = "When I get naked in the bathroom, the shower usually gets turned on.";
-	public static final String joke19 = "I'm emotionally constipated. I haven't given a shit in days.";
-	public static final String joke20 = "Why did the scientist install a knocker on his door? He wanted to win the No-bell prize!";
-	public static final String joke21 = "Why did the bee get married? Because he found his honey.";
-	public static final String joke22 = "I saw an ad for burial plots, and thought to myself this is the last thing I need.";
-	public static final String joke23 = "What tea do hockey players drink? Penaltea!";
-	public static final String joke24 = "Why did the snowman smile? Because the snowblower is coming.";
-	public static final String joke25 = "Two boll weevils grew up in South Carolina. One went to Hollywood and one never amounted to much. The second one, naturally, became known as the lesser of two weevils.";
-	
-	public static final String insult1 = "May your headphones snag on every door handle";
-	public static final String insult2 = "May you press 'A' too hastily and be forced to speak with the nurse at the Pokemon Center all over again";
-	public static final String insult3 = "May you forever feel your cell phone vibrating in the pocket it's not even in";
-	public static final String insult4 = "May the chocolate chips in your cookies always turn out to be raisins";
-	public static final String insult5 = "May your tea be too hot when you receive it, and too cold by the time you remember it's there";
-	public static final String insult6 = "May your chair produce a sound similar to a fart, but only once, such that you cannot reporduce it to prove that it was just the chair";
-	public static final String insult7 = "May your mother come to talk to you, and then leave your door slightly ajar, so that you have to get up and close it";
-	public static final String insult8 = "May the pin of the bathroom stall never reach the lock to close the door";
-	public static final String insult9 = "May your spoon always slip and sink under the hot soup you eat";
-	public static final String insult10 = "May all your Facebook notifications be game invites";
-	public static final String insult11 = "May you have your laptop charge overnight without noticing the chord isn't plugged into the wall";
-	public static final String insult12 = "May every \"empty\" parking space you see in the distance actually contain a motorcycle";
-	public static final String insult13 = "May every sock you wear be slightly rotated, just enough for it to be uncomfortable";
-	public static final String insult14 = "May you never be quite certain as to whether that pressure is a fart or poop";
-	public static final String insult15 = "May your return calls always go unanswered even though you literally just fucking called me, Jesse";
-	public static final String insult16 = "May your cookie always be slightly too large to fit inside your glass of milk";
-	public static final String insult17 = "May both sides of your pillow be warm";
-	public static final String insult18 = "May your five year old neighbor have their violin lesson during all of your hangovers";
-	public static final String insult19 = "May you always get up from your computer with your headphones still attached";
-	public static final String insult20 = "May your article load that extra little bit as your about to click a link so you click an ad instead";
-	public static final String insult21 = "May every guitar pick you use fall into the soundhole";
-	public static final String insult22 = "May you always step in a wet spot after putting on fresh socks";
-	
-	public static final String advice1 = "Never Trust an Atom, They Make Up Everything";
-	public static final String advice2 = "Don't Give Up on Your Dream, just keep on Sleeping";
-	public static final String advice3 = "Hearts are wild creatures. That's why our ribs are cages";
-	public static final String advice4 = "Never Trust Someone Who Puts in the Milk, then the Cereal";
-	public static final String advice5 = "You'll Get Everything You Want in Life if You Lower Your Expectations";
-	public static final String advice6 = "Don't Sweat the Petty Things and Don't Pet the Sweaty Things";
-	public static final String advice7 = "Scientists have proven that the people who celebrate the most birthdays live the longest.";
-	public static final String advice8 = "Avoid having a bad day at work by never getting a job";
-	public static final String advice9 = "When your only tool is a hammer, all problems start looking like nails";
-	public static final String advice10 = "Support bacteria - they're the only culture some people have";
-	public static final String advice11 = "I swear to drunk I'm not God, but seriously, stay in drugs, eat school, and don't do vegetables.";
-	
-	public static final String insult23 = "Your gene pool could use a little chlorine.";
 	public static final String POLL_URL = "https://strawpoll.me/api/v2/";
 	
 	

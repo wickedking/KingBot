@@ -15,31 +15,19 @@ public class BotConstants {
 	public static final String STANDALONE = "standalone";
 	public static final String INCLUDED = "included";
 	
-	public static final String HELP_MESSAGE = "``` `commands - Lists the commands \n `keywords - Lists the current keyword filters \n `rank - Shows your current rank \n `levels - Shows a link to the website with all the levels \n `serverinfo - Shows basic info about the server \n `help - use to find more specific info on each command \n `playmusic - a work in progress \n `joke - Will return a random joke \n `advice - will return some less than helpful advice \n `insult - will give a nice insult```";
-
-	public static final String ADMIN_HELP_MESSAGE = "``` `ban - (admin only) Bans the person tagged \n `setlogging - (admin only) Sets the logging channel to this channel \n `deletelogging - (admin only) Removes the logging from this channel \n `getlogging - (admin only) yeah just dont use this \n `timeout - (admin only) Removes the ability to type or talk from the person \n `deletekeyword - (admin only) Deletes the keyword specified \n `setkeyword - (admin only) Setups a new keyword filter, use `help setkeyword for specific information on how to use this command \n `kick - (admin only) Kicks the person from the server \n `prune - (admin only) Deletes the last 'X' messages```";
-	
-	public static final String GUILD_ID = "T100_guildId";
+	public static final String HELP_MESSAGE = "``` `commands - Lists the commands \n `serverinfo - Shows basic info about the server \n `help - use to find more specific info on each command \n `playmusic - a work in progress \n `joke - Will return a random joke \n `advice - will return some less than helpful advice \n `insult - will give a nice insult \n `8ball - will return a random 8 ball message```";
+	public static final String ADMIN_HELP_MESSAGE = "``` `ban - (admin only) Bans the person tagged \n `timeout - (admin only) Removes the ability to type or talk from the person \n `kick - (admin only) Kicks the person from the server \n `prune - (admin only) Deletes the last 'X' messages```";
 	
 	public static final String NOT_AUTHORIZED = "Not Authorized to use this command";
-	
 	public static final String ABOUT_MESSAGE = "This bot was made with love by WickedKing. If have you suggestions of new features or things that need fixing, please contact him. While his name is wicked, he wont bite. He accepts no responsiblity of anything that happens while using his bot. Enjoy";
 		
 	public static final String HELP_PRUNE = "``` `prune \n Used to delete x amount of messages in the channel its used it. Will auto delete the prune command.\n \n Example: `prune 10 - will delete the 10 previous messages \n Note: for large values this may take a little bit of time due to discord rate limiting. ```";
 	public static final String HELP_RANK = "''' `rank \n Used to show your current ranking and xp for the server. \n \n Example: `rank ```";
-	public static final String HELP_LEVEL = "``` `level \n Used to show all the levels for all users. \n \n Example: `level ```";
-	public static final String HELP_KEYWORDS = "``` `keywords \n Used to show all current keyword filters setup for the server. keywords can be set to be auto deleted, or auto notify certain users. Use `help setkeyword for more info. \n \n Example: `Keywords '''";
 	public static final String HELP_TIMEOUT = "``` `timeout @user \n Places mentioned user in a timeout role. Timeout will remove the ability to send messages in any channel in the server. Must remember to `untimeout @user. \n\n Example: `timeout @WickedKing - would place WickedKing in timeout (how ruud) ```";
-	public static final String HELP_GIVEAWAY = "``` `giveaway \n Would start a giveaway type thing. This will be implemented later. Just forget about this command for now ```";
 	public static final String HELP_COMMANDS = "``` `commands \n Will show all the commands that the bot currently accepts with basic info about them. \n \n Example: `commands ```";
 	public static final String HELP_KICK = "``` `kick @user \n Will kick the user mentioned from the server. Will kick with no warning. Use with caution. \n \n Example: `kick @WickedKing - Would kick WickedKing from the server. (That makes me sad) ```";
 	public static final String HELP_BAN = "``` `ban @user \n Will ban the user mentioned from the server. Will ban with no warning. Use with caution. \n \n Example: `ban @WickedKing - Would ban WickedKing from the server. (That makes me really sad. I liked him) ```";
 	public static final String HELP_SERVERINFO = "``` `serverinfo \n Will show basic stats about the server. \n \n Example: `serverinfo ```";
-	public static final String HELP_SETKEYWORD = "``` `setkeyword 'keyword' 'action1' action2' 'message' \n Will setup the keyword filter for the server. 'keyword' is the word that is flagged. 'action1' is either 'keep' or 'delete'. Action2 is 'standalone' or 'included'. 'message' is the message that is posted when the filter is tripped, put 'none' if you dont want a message to be posted \n \n Example `setkeyword boss delete standalone please dont call me that - Will create a keyword filter on 'boss' as long as the word is not included in another word(standalone) and will post the rest of the message to chat ```";
-	public static final String HELP_DELETEKEYWORD = "``` `deletekeyword 'keyword' \n Will delete the keyword filter associated. \n \n Example: `deletekeyword boss - Will delete the keyword of 'boss' ```";
-	public static final String HELP_SETLOGGING = "``` `setlogging \n This will set the logging channel to the current channel. Logging will include things like: users banned, kicked, messages deleted, avatars changed, names changes, etc. \n \n Example `setlogging ```";
-	public static final String HELP_DELETELOGGING = "``` `deletelogging \n This will delete the logging to this channel for this server. Must be used in the channel with the current logging associated. \n \n Example: `deletelogging ```";
-	public static final String HELP_GETLOGGING = "``` `getlogging \n Yeah this is here for reason. But you dont need to use this command. Just forgot this command is here. ```";
 	public static final String HELP_PLAYMUSIC = "``` `playmusic \n Will be used in the future once WickedKing finishes the code to make this work. For now just sit back and wish for this feature, and maybe it will come true ```";
 	public static final String HELP_ABOUT = "``` `about \n Displays a short about message for this bot. \n \n Example: `about ```";
 		
@@ -72,11 +60,6 @@ public class BotConstants {
 	public static final String UN_TABLE_FLIP = "┬─┬﻿ ノ( ゜-゜ノ)";
 	
 	public static final String UNFINISHED = "This feature is not yet implemented. Please tell WickedKing to get off his lazy ass and finish it";
-	
-	public static final String BAD_KEYWORD = "That keyword command is not correct. Please correct and try again";
-	public static final String DELETE_KEYWORD_UNSUCCESSFUL = "Your keyword attempt was not deleted successfully";
-	public static final String DELETE_LOGGING_UNSUCCESSFUL = "Error occured when stopping logging. Please make sure your in the logging channel when using this command";
-	
 	
 	
 	public static final String joke1 = "She was only a whiskey-maker, but he loved her still.";
@@ -127,14 +110,20 @@ public class BotConstants {
 	public static final String insult20 = "May your article load that extra little bit as your about to click a link so you click an ad instead";
 	public static final String insult21 = "May every guitar pick you use fall into the soundhole";
 	public static final String insult22 = "May you always step in a wet spot after putting on fresh socks";
-	//public static final String insult2 = "";
 	
+	public static final String advice1 = "Never Trust an Atom, They Make Up Everything";
+	public static final String advice2 = "Don't Give Up on Your Dream, just keep on Sleeping";
+	public static final String advice3 = "Hearts are wild creatures. That's why our ribs are cages";
+	public static final String advice4 = "Never Trust Someone Who Puts in the Milk, then the Cereal";
+	public static final String advice5 = "You'll Get Everything You Want in Life if You Lower Your Expectations";
+	public static final String advice6 = "Don't Sweat the Petty Things and Don't Pet the Sweaty Things";
+	public static final String advice7 = "Scientists have proven that the people who celebrate the most birthdays live the longest.";
+	public static final String advice8 = "Avoid having a bad day at work by never getting a job";
+	public static final String advice9 = "When your only tool is a hammer, all problems start looking like nails";
+	public static final String advice10 = "Support bacteria - they're the only culture some people have";
+	public static final String advice11 = "I swear to drunk I'm not God, but seriously, stay in drugs, eat school, and don't do vegetables.";
 	
-	
-	public static final String advice = "I swear to drunk I'm not God, but seriously, stay in drugs, eat school, and don't do vegetables.";
-	
-	public static final String insult = "Your gene pool could use a little chlorine.";
-	
+	public static final String insult23 = "Your gene pool could use a little chlorine.";
 	public static final String POLL_URL = "https://strawpoll.me/api/v2/";
 	
 	

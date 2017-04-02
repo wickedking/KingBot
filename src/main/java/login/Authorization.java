@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
@@ -38,7 +39,15 @@ public class Authorization {
 	 */
 	public static IDiscordClient client;	
 	
-	private static final List<String> GAME_LIST = Arrays.asList("With the King", "Adulting", "outside", "with a friend", "breaking things", "nothing", "don't look at me");
+	/**
+	 * Hardcoded Guild Id. Used mainly for testing.
+	 */
+	private static final String GUILD_ID = "129063193493372929";
+	
+	/**
+	 * List of games for the bot to 'play'
+	 */
+	private static final List<String> GAME_LIST = Arrays.asList("With the King", "Adulting", "Outside", "with a friend", "Breaking things", "Nothing", "Don't look at me");
 	
 	private Authorization(){
 		//empty constructor
@@ -53,12 +62,12 @@ public class Authorization {
 		logger.warn("Hello World");
 		client = new ClientBuilder().withToken(HiddenConstants.BOTTOKEN).login();
 		BotEventListener listener = new BotEventListener();
-		client.getDispatcher().registerListener(listener);
-		client.getDispatcher().registerListener(new LoggingListener(listener));
+		client.getDispatcher().registerListener(listener);		
+		client.getDispatcher().registerListener(new LoggingListener(listener, client.getGuildByID(GUILD_ID)));
 		client.getDispatcher().registerListener(new HelpListener());
 		
 		final ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-	    service.scheduleWithFixedDelay(new Runnable()
+	   ScheduledFuture<?> future =  service.scheduleWithFixedDelay(new Runnable()
 	      {
 	        @Override
 	        public void run()
@@ -67,7 +76,6 @@ public class Authorization {
 	          Authorization.changeGame();
 	        }
 	      }, 0, 5, TimeUnit.MINUTES);
-
 	}
 	
 	/**

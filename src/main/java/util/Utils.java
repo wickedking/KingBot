@@ -37,6 +37,9 @@ import sx.blah.discord.util.RequestBuffer;
  */
 public class Utils {
 
+	/**
+	 * Logger used for class
+	 */
 	private static final Logger logger = LogManager.getLogger(Utils.class);
 
 	/**
@@ -44,11 +47,25 @@ public class Utils {
 	 */
 	private static String botAdmin = "Admin";
 
+	/**
+	 * Role for a mod for the bot
+	 */
 	private static String botMod = "Mod";
 	
+	/**
+	 * Reference to the list of jokes 
+	 */
 	private static List<String> jokeList = constructJokeList();
 	
+	/**
+	 * Reference to the list of 'insults'
+	 */
 	private static List<String> insultList = constructInsultList();
+	
+	/**
+	 * Reference to the list of 'advice'
+	 */
+	private static List<String> adviceList = constructAdvice();
 
 	/**
 	 * Used to save user created Keywords
@@ -120,15 +137,6 @@ public class Utils {
 	}
 
 	/**
-	 * Initialize database, return mapping info
-	 * @return
-	 */
-	public static void  startupDBBot(){
-		//TODO implement?
-
-	}
-
-	/**
 	 * validation for keywords, action word 1
 	 * @param action1
 	 * @return
@@ -158,6 +166,10 @@ public class Utils {
 		return false;
 	}
 
+	/**
+	 * Returns the list of all possible 8ball answers
+	 * @return List of Strings of 8 ball answers
+	 */
 	public static List<String> getEightBallAnswers(){
 		return Arrays.asList(BotConstants.BALL1,
 				BotConstants.BALL2,
@@ -183,25 +195,40 @@ public class Utils {
 	}
 
 
-
+	/**
+	 * Returns a random joke from the list
+	 * @return String of the joke
+	 */
 	public static String getJoke(){
 		Random rand = new Random();
 		int index = rand.nextInt(jokeList.size());
 		return jokeList.get(index);
 	}
 	
-	
-	public static String getAdvice(){
-		return "";
-	}
-	
+	/**
+	 * Returns a random insult from the list
+	 * @return String of the insult
+	 */
 	public static String getInsult(){
 		Random rand = new Random();
 		int index = rand.nextInt(insultList.size());
 		return insultList.get(index);
 	}
+
+	/**
+	 * Returns a random advice from the list
+	 * @return String of the advice
+	 */
+	public static String getAdvice(){
+		Random rand = new Random();
+		int index = rand.nextInt(adviceList.size());
+		return adviceList.get(index);
+	}
 	
-	
+	/**
+	 * Constructs the list of Jokes
+	 * @return the list of jokes
+	 */
 	private static List<String> constructJokeList(){
 		List<String> jokeList = new ArrayList<String>();
 		jokeList.add(BotConstants.joke1);
@@ -233,6 +260,10 @@ public class Utils {
 		return jokeList;
 	}
 	
+	/**
+	 * Constructs the list of insults
+	 * @return the list of insults
+	 */
 	private static List<String> constructInsultList(){
 		List<String> insultList = new ArrayList<String>();
 		
@@ -258,11 +289,39 @@ public class Utils {
 		insultList.add(BotConstants.insult20);
 		insultList.add(BotConstants.insult21);
 		insultList.add(BotConstants.insult22);
+		insultList.add(BotConstants.insult23);
 		
 		return insultList;
 
 	}
 	
+	/**
+	 * Constructs the list of advice
+	 * @return the list of advice
+	 */
+	private static List<String> constructAdvice() {
+		List<String> adviceList = new ArrayList<String>();
+		adviceList.add(BotConstants.advice1);
+		adviceList.add(BotConstants.advice2);
+		adviceList.add(BotConstants.advice3);
+		adviceList.add(BotConstants.advice4);
+		adviceList.add(BotConstants.advice5);
+		adviceList.add(BotConstants.advice6);
+		adviceList.add(BotConstants.advice7);
+		adviceList.add(BotConstants.advice8);
+		adviceList.add(BotConstants.advice9);
+		adviceList.add(BotConstants.advice10);
+		adviceList.add(BotConstants.advice11);
+		
+		return adviceList;
+	}
+
+	/**
+	 * Used to get a poll from strawpoll
+	 * @param message the id of the poll to retrieve
+	 * 
+	 * TODO finish
+	 */
 	public static void getPoll(String message){
 		String id = message.replace("`getpoll ", "");
 		try {
@@ -276,8 +335,40 @@ public class Utils {
 		}
 	}
 
+	/**
+	 * Used to create a poll. Parses input string to create message params
+	 * @param event
+	 */
 	public static void createPoll(CreatePollEvent event) {
-		//HttpResponse<JsonNode> jsonResponse = Unirest.post(url)
+		String title;
+		String[] options;
+		boolean multi;
+		String message = event.getMessage().getContent();
+		message = message.substring(12);
+		int index = message.indexOf("|");
+		title = message.substring(0, index);
+		message = message.substring(index + 1).trim();
+		System.out.println(message);
+		options = message.split("\\|");
+		//title = options[0];
+		multi = Boolean.getBoolean(options[options.length -1]);
+		System.out.println("_____________________");
+		System.out.println(title);
+		for(String out : options){
+			System.out.println(out);
+		}
+		System.out.println(multi);
+		HttpResponse<JsonNode> jsonResponse = null;
+		try {
+			jsonResponse = Unirest.post("https://www.strawpoll.me/api/v2/polls").field("title", title).field("options", options).field("multi", multi).asJson();
+		} catch (UnirestException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println(jsonResponse.getStatus());
+		System.out.println(jsonResponse.getStatusText());
+		System.out.println(jsonResponse.getBody());
+		System.out.println(jsonResponse.getHeaders());
 	}
 
 }

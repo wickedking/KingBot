@@ -2,13 +2,14 @@ package eventListeners;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
-import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import org.apache.logging.log4j.LogManager;
@@ -25,18 +26,14 @@ import events.BanEvent;
 import events.CommandsEvent;
 import events.CreatePollEvent;
 import events.EightBallEvent;
-import events.GetLoggingEvent;
 import events.GetPollEvent;
 import events.GetServerInfoEvent;
-import events.HelpEvent;
 import events.InsultEvent;
 import events.JokeEvent;
 import events.KickEvent;
 import events.LeaveChannelEvent;
 import events.LennyEvent;
 import events.MiddleFingerEvent;
-import events.PlayMusicEvent;
-import events.PrivateMessageEvent;
 import events.PruneEvent;
 import events.ShrugEvent;
 import events.TableFlipEvent;
@@ -44,11 +41,12 @@ import events.TimeoutEvent;
 import events.UnTableFlipEvent;
 import login.Authorization;
 import sx.blah.discord.api.events.EventSubscriber;
-import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
+import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IPrivateChannel;
 import sx.blah.discord.handle.obj.IRegion;
 import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.handle.obj.Status;
 import sx.blah.discord.handle.obj.VerificationLevel;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.MessageList;
@@ -63,111 +61,15 @@ import util.Utils;
  *
  */
 public class BotEventListener {
+	
+	/**
+	 * List of games for the bot to 'play'
+	 */
+	private static final List<String> GAME_LIST = Arrays.asList("With the King", "Adulting", "Outside", "with a friend", "Breaking things", "Nothing", "Don't look at me");
 
 	private static final Logger logger = LogManager.getLogger(BotEventListener.class);
 	
 	private static AudioPlayer AUDIO_PLAYER = null;
-
-	/**
-	 * MessageReceivedEvent listener method, parses message and fires new event if needed
-	 * Really need to refactor
-	 * @param event
-	 */
-	@EventSubscriber
-	public void onMessageReceived(MessageReceivedEvent event){
-		logger.warn(event.getMessage().getAuthor().getID());
-		LocalTime time = LocalTime.now();
-		logger.warn(time.getHour());
-
-		//TODO refactor, please just refactor this
-		if(event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "prune")){
-			event.getClient().getDispatcher().dispatch(new PruneEvent(event.getMessage()));
-
-		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "getpoll")) {
-			logger.warn("creating poll event");
-			event.getClient().getDispatcher().dispatch(new GetPollEvent(event.getMessage()));
-
-		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "timeout ")) {
-			event.getClient().getDispatcher().dispatch(new TimeoutEvent(event.getMessage()));
-
-		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "commands")) {
-			event.getClient().getDispatcher().dispatch(new CommandsEvent(event.getMessage()));
-
-		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "kick ")) {
-			event.getClient().getDispatcher().dispatch(new KickEvent(event.getMessage()));
-
-		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "ban ")) {
-			event.getClient().getDispatcher().dispatch(new BanEvent(event.getMessage()));
-
-//		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "setlogging")) {
-//			event.getClient().getDispatcher().dispatch(new SetLoggingEvent(event.getMessage()));
-
-		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "getlogging")) {
-			event.getClient().getDispatcher().dispatch(new GetLoggingEvent(event.getMessage()));
-
-//		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "playmusic")) {
-//			event.getClient().getDispatcher().dispatch(new PlayMusicEvent(event.getMessage()));
-
-		} else if (event.getMessage().getContent().startsWith("/shrug")) {
-			event.getClient().getDispatcher().dispatch(new ShrugEvent(event.getMessage()));
-
-		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "about")) {
-			event.getClient().getDispatcher().dispatch(new AboutEvent(event.getMessage()));
-
-		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "help")) {
-			event.getClient().getDispatcher().dispatch(new HelpEvent(event.getMessage()));
-
-		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "8ball")) {
-			event.getClient().getDispatcher().dispatch(new EightBallEvent(event.getMessage()));
-
-		} else if (event.getMessage().getContent().startsWith("/tableflip")) {
-			event.getClient().getDispatcher().dispatch(new TableFlipEvent(event.getMessage()));
-
-		} else if (event.getMessage().getContent().startsWith("/unflip")) {
-			event.getClient().getDispatcher().dispatch(new UnTableFlipEvent(event.getMessage()));
-
-		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "joke")) {
-			event.getClient().getDispatcher().dispatch(new JokeEvent(event.getMessage()));
-
-		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "insult")) {
-			event.getClient().getDispatcher().dispatch(new InsultEvent(event.getMessage()));
-
-		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "advice")) {
-			event.getClient().getDispatcher().dispatch(new AdviceEvent(event.getMessage()));
-
-		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "privatemessage")) {
-			event.getClient().getDispatcher().dispatch(new PrivateMessageEvent(event.getMessage()));
-
-		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "admincommands")) {
-			event.getClient().getDispatcher().dispatch(new AdminCommandsEvent(event.getMessage()));
-			
-		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "serverinfo")) {
-			event.getClient().getDispatcher().dispatch(new GetServerInfoEvent(event.getMessage()));
-			
-		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "createpoll")) {
-			event.getClient().getDispatcher().dispatch(new CreatePollEvent(event.getMessage()));
-			
-		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "lenny") || event.getMessage().getContent().startsWith("/lenny")) {
-			event.getClient().getDispatcher().dispatch(new LennyEvent(event.getMessage()));
-			
-		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "middlefinger") || event.getMessage().getContent().startsWith("/middlefinger")) {
-			event.getClient().getDispatcher().dispatch(new MiddleFingerEvent(event.getMessage()));
-			
-		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "join")) {
-			event.getClient().getDispatcher().dispatch(new AudioJoinEvent(event.getMessage()));
-			
-		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "playmusic")) {
-			event.getClient().getDispatcher().dispatch(new AudioPlayEvent(event.getMessage()));
-			
-		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "stopmusic")) {
-			event.getClient().getDispatcher().dispatch(new AudioStopEvent(event.getMessage()));
-			
-		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "leavechannel")) {
-			event.getClient().getDispatcher().dispatch(new LeaveChannelEvent(event.getMessage()));
-			
-		}
-
-	}
 
 	/**
 	 * Writes the shrug ascii out to the channel
@@ -487,6 +389,30 @@ public class BotEventListener {
 	public void onLeaveChannel(LeaveChannelEvent event) {
 		System.out.println("in audio leaving method");
 		event.getClient().getConnectedVoiceChannels().get(0).leave();
+	}
+	
+	
+	@EventSubscriber
+	public void ChangeGameEvent(ReadyEvent event){
+	final ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+	   service.scheduleWithFixedDelay(new Runnable()
+	      {
+	        @Override
+	        public void run(){
+	          logger.warn("Inside timer");
+	          BotEventListener.changeGame(event);
+	        }
+	      }, 0, 30, TimeUnit.MINUTES);
+	}
+	
+	/**
+	 * Changes the 'game' the bot is playing
+	 */
+	public static void changeGame(ReadyEvent event){
+		Random rand = new Random();
+		int num = rand.nextInt(GAME_LIST.size());
+		event.getClient().changeStatus(Status.game(GAME_LIST.get(num)));
+		
 	}
 	
 }

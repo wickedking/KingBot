@@ -38,11 +38,6 @@ public class LoggingListener {
 	private static final String LOGGING_CHANNEL = "204639036189442048";
 	
 	private static IGuild GUILD = null;
-
-	/**
-	 * A reference to the botListener
-	 */
-	private BotEventListener botListener;
 	
 	/**
 	 * Logger
@@ -59,8 +54,7 @@ public class LoggingListener {
 	 * Default constructor 
 	 * @param listener
 	 */
-	public LoggingListener(BotEventListener listener, IGuild guild){
-		botListener = listener;
+	public LoggingListener(IGuild guild){
 		GUILD = guild;
 	}
 

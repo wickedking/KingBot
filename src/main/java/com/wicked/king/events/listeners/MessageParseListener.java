@@ -2,13 +2,14 @@ package com.wicked.king.events.listeners;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.wicked.king.constants.BotConstants;
+import com.wicked.king.db.DBAccessorPerson;
 import com.wicked.king.events.AboutEvent;
 import com.wicked.king.events.AdminCommandsEvent;
 import com.wicked.king.events.AdviceEvent;
-import com.wicked.king.events.AudioJoinEvent;
-import com.wicked.king.events.AudioPlayEvent;
-import com.wicked.king.events.AudioStopEvent;
+
 import com.wicked.king.events.BanEvent;
 import com.wicked.king.events.CommandsEvent;
 import com.wicked.king.events.CreatePollEvent;
@@ -31,51 +32,44 @@ import com.wicked.king.events.UnTableFlipEvent;
 
 
 import sx.blah.discord.api.events.EventSubscriber;
-import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
+import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 
 public class MessageParseListener {
 	
 	private static final Logger logger = LogManager.getLogger(BotEventListener.class);
 	
-	//@Autowired
-	//private DBAccessor repository;
+	@Autowired
+	private DBAccessorPerson repository;
 	
-	/**
+	public MessageParseListener(DBAccessorPerson repository2){
+		repository = repository2;
+	}
+	
+	/** 
 	 * MessageReceivedEvent listener method, parses message and fires new event if needed
-	 * Really need to refactor
+	 * Really need to refactor 
 	 * @param event
 	 */
 	@EventSubscriber
 	public void onMessageReceived(MessageReceivedEvent event) {
 
-//		String message = event.getMessage().getContent();
-//		if(message.startsWith(BotConstants.BOT_PREFIX)){
-//			int index = message.indexOf(" ");
-//			if(index == -1){
-//				index = message.length();
-//			}
-//			String className = message.substring(1, index);
-//			className = className.replace(className.substring(0, 1), className.substring(0, 1).toUpperCase());
-//			className = className + "Event";
-//			Class<?> testClass = Class.forName(className);
-//			Constructor<?> con = testClass.getConstructor(IMessage.class);
-//			event.getClient().getDispatcher().dispatch((CustomEvent) con.newInstance(event.getMessage()));
-//		} else if(message.startsWith("/")){
-//			//yeah
-//		}
 
-		//TODO refactor, please just refactor this
-//		Person author = repository.findById(event.getMessage().getAuthor().getID());
+//		
+//		Person author = repository.findById(event.getMessage().getAuthor().getStringID());
 //		if (author == null){
-//			Person newAuthor = new Person();
+//			author = new Person();
 //			IUser user = event.getMessage().getAuthor();
-//			newAuthor.setId(user.getID());
-//			newAuthor.setLevel(1);
-//			newAuthor.setName(user.getDisplayName(event.getMessage().getGuild()));
-//			newAuthor.setXp(10);
-//			newAuthor.setXpNextRank(5);
-//			repository.save(newAuthor);
+//			author.setId(user.getStringID());
+//			author.setLevel(1);
+//			author.setName(user.getDisplayName(event.getMessage().getGuild()));
+//			author.setXp(0);
+//			author.setXpNextRank(5);
+//			
 //		}
+//		author.setXp(author.getXp() + 10);
+//		repository.save(author);
+		
+		//TODO refactor, please just refactor this
 		if(event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "prune")){
 			event.getClient().getDispatcher().dispatch(new PruneEvent(event.getMessage()));
 
@@ -139,15 +133,6 @@ public class MessageParseListener {
 			
 		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "middlefinger") || event.getMessage().getContent().startsWith("/middlefinger")) {
 			event.getClient().getDispatcher().dispatch(new MiddleFingerEvent(event.getMessage()));
-			
-		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "join")) {
-			event.getClient().getDispatcher().dispatch(new AudioJoinEvent(event.getMessage()));
-			
-		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "playmusic")) {
-			event.getClient().getDispatcher().dispatch(new AudioPlayEvent(event.getMessage()));
-			
-		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "stopmusic")) {
-			event.getClient().getDispatcher().dispatch(new AudioStopEvent(event.getMessage()));
 			
 		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "leavechannel")) {
 			event.getClient().getDispatcher().dispatch(new LeaveChannelEvent(event.getMessage()));

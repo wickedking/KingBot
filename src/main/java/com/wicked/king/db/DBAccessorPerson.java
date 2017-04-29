@@ -10,5 +10,6 @@ public interface DBAccessorPerson extends MongoRepository<Person, String>{
 	
 	public Person findByName(String name);
 	public List<Person> findByLevel(int level);
+	public Person findById(String id);
 
 }

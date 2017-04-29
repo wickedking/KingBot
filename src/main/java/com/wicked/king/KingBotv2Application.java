@@ -10,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
+import com.wicked.king.db.DBAccessorPerson;
 import com.wicked.king.db.DBAccessorUtils;
 import com.wicked.king.events.listeners.BotEventListener;
 import com.wicked.king.events.listeners.HelpListener;
@@ -31,10 +32,13 @@ private static final Logger logger = LogManager.getLogger(KingBotv2Application.c
 	/**
 	 * A static reference to the DiscordClient Object
 	 */
-	public static IDiscordClient client;	
+	private static IDiscordClient client = new ClientBuilder().withToken(HiddenConstants.BOTTOKEN).login();
 	
 	@Autowired
 	private DBAccessorUtils repository;
+	
+	@Autowired
+	private DBAccessorPerson repository2;
 	
 	/**
 	 * Hardcoded Guild Id. Used mainly for testing.
@@ -44,28 +48,23 @@ private static final Logger logger = LogManager.getLogger(KingBotv2Application.c
 	public static void main(String[] args) throws DiscordException {
 		SpringApplication.run(KingBotv2Application.class, args);
 		
-		
 	}
-	
-//	public DBAccessorPerson getRepo(){
-//		return repository;
-//	}
 	
 	@Override
 	public void run(String... args) throws DiscordException{
 		
-		if(repository == null){
-			System.out.println("Still fucking null");
-		}
-		
-		
 		logger.warn("Hello World");
-		client = new ClientBuilder().withToken(HiddenConstants.BOTTOKEN).login();
 		BotEventListener listener = new BotEventListener(repository);
 		client.getDispatcher().registerListener(listener);		
-		client.getDispatcher().registerListener(new LoggingListener(client.getGuildByID(GUILD_ID)));
+		client.getDispatcher().registerListener(new LoggingListener(client.getGuildByID(Long.parseUnsignedLong(GUILD_ID))));
 		client.getDispatcher().registerListener(new HelpListener());
-		client.getDispatcher().registerListener(new MessageParseListener());
+		client.getDispatcher().registerListener(new MessageParseListener(repository2));
 		listener.sendRepo();
 	}
+	
+	public static IDiscordClient getClient() {
+		return client;
+	}
+	
+	
 }

@@ -1,7 +1,9 @@
 package com.wicked.king.bean;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document(collection = "people")
 public class Person {
 	
 	@Id
@@ -21,7 +23,7 @@ public class Person {
 	 * 
 	 */
 	public Person() {
-		
+		//blank constructor
 	}
 	
 	public String getId() {

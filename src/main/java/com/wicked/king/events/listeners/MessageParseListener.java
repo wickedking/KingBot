@@ -9,7 +9,7 @@ import com.wicked.king.db.DBAccessorPerson;
 import com.wicked.king.events.AboutEvent;
 import com.wicked.king.events.AdminCommandsEvent;
 import com.wicked.king.events.AdviceEvent;
-
+import com.wicked.king.events.AwwEvent;
 import com.wicked.king.events.BanEvent;
 import com.wicked.king.events.CommandsEvent;
 import com.wicked.king.events.CreatePollEvent;
@@ -137,7 +137,10 @@ public class MessageParseListener {
 		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "leavechannel")) {
 			event.getClient().getDispatcher().dispatch(new LeaveChannelEvent(event.getMessage()));
 			
-		}
+		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "aww")) {
+            event.getClient().getDispatcher().dispatch(new AwwEvent(event.getMessage()));
+            
+        }
 	}
 
 }

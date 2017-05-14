@@ -1,5 +1,6 @@
 package com.wicked.king.events.listeners;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -10,6 +11,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +23,7 @@ import com.wicked.king.db.DBAccessorUtils;
 import com.wicked.king.events.AboutEvent;
 import com.wicked.king.events.AdminCommandsEvent;
 import com.wicked.king.events.AdviceEvent;
+import com.wicked.king.events.AwwEvent;
 import com.wicked.king.events.BanEvent;
 import com.wicked.king.events.CommandsEvent;
 import com.wicked.king.events.EightBallEvent;
@@ -199,7 +204,7 @@ public class BotEventListener {
             MessageHistory list = event.getMessage().getChannel().getMessageHistory(numMessages);
             list.bulkDelete();
 
-        } else { // TODO catch parse int error and limit to 100 messages.
+        } else { 
             Utils.writeMessageToChannel(BotConstants.NOT_AUTHORIZED, event.getMessage().getChannel());
         }
 
@@ -331,7 +336,7 @@ public class BotEventListener {
     }
 
     @EventSubscriber
-    public void ChangeGameEvent(ReadyEvent event) {
+    public void changeGameEvent(ReadyEvent event) {
         final ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
         service.scheduleWithFixedDelay(new Runnable() {
             @Override
@@ -340,6 +345,29 @@ public class BotEventListener {
                 BotEventListener.changeGame(event);
             }
         }, 0, 30, TimeUnit.MINUTES);
+    }
+    
+    @EventSubscriber
+    public void onAwwEvent(AwwEvent event){
+        Document doc = null;
+        try {
+            doc = Jsoup.connect("https://www.reddit.com/r/aww/").get();
+        } catch (IOException e) {
+            logger.warn(e);
+        }
+
+        Elements elements = doc.getElementsByClass("sitetable");
+
+        String html = doc.html();
+        System.out.println(elements.size());
+        int index = html.indexOf("https://i.redditmedia.com/");
+        html = html.substring(index);
+        int endIndex = html.indexOf(".jpg");
+        String link = html.substring(0, endIndex + 4);
+        System.out.println("This is the link: " +  link);
+
+
+
     }
 
     /**

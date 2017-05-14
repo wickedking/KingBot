@@ -19,7 +19,6 @@ import com.wicked.king.events.listeners.MessageParseListener;
 import com.wicked.king.hidden.HiddenConstants;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
-import sx.blah.discord.util.DiscordException;
 
 @SpringBootApplication
 @EnableAutoConfiguration
@@ -45,13 +44,13 @@ private static final Logger logger = LogManager.getLogger(KingBotv2Application.c
 	 */
 	private static final String GUILD_ID = "129063193493372929";
 
-	public static void main(String[] args) throws DiscordException {
+	public static void main(String[] args) {
 		SpringApplication.run(KingBotv2Application.class, args);
 		
 	}
 	
 	@Override
-	public void run(String... args) throws DiscordException{
+	public void run(String... args) {
 		
 		logger.warn("Hello World");
 		BotEventListener listener = new BotEventListener(repository);

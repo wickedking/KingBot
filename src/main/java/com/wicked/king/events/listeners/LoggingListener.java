@@ -25,12 +25,7 @@ public class LoggingListener {
 
     private static final long LOGGING_CHANNEL = 204639036189442048l;
 
-    private static IGuild GUILD = null;
-
-    /**
-     * Logger
-     */
-//    private static final Logger logger = LogManager.getLogger(LoggingListener.class);
+    private static IGuild Guild = null;
 
     /**
      * Static reference to time formatter
@@ -43,7 +38,7 @@ public class LoggingListener {
      * @param listener
      */
     public LoggingListener(IGuild guild) {
-        GUILD = guild;
+        Guild = guild;
     }
 
     /**
@@ -69,7 +64,6 @@ public class LoggingListener {
      */
     @EventSubscriber
     public void onMessageUpdate(MessageUpdateEvent event) {
-        System.out.println("does this work?");
         if (event.getNewMessage().getAuthor().getClient() == KingBotv2Application.getClient()) {
             Utils.writeMessageToChannel(
                     "`" + timeFormat.format(new Date()) + "` __**" + event.getOldMessage().getAuthor().getName()
@@ -121,7 +115,7 @@ public class LoggingListener {
                 && "Element Box".equals(event.getUser().getName())) {
             Utils.writeMessageToChannel(
                     "@everyone EB is now streaming on twitch. Go to https://www.twitch.tv/element_box and hang out!!",
-                    GUILD.getChannelByID(231938880587169792l));
+                    Guild.getChannelByID(231938880587169792l));
         }
     }
 

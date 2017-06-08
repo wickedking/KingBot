@@ -40,6 +40,15 @@ public class LoggingListener {
     public LoggingListener(IGuild guild) {
         Guild = guild;
     }
+    
+    private String getLoggingChannel(IGuild guild){
+        return Utils.getServerInfo(guild.getStringID()).getLoggingChannel();
+    }
+    
+    private boolean isLoggingEnabled(IGuild guild){
+        return Utils.getServerInfo(guild.getStringID()).isDoLogging();
+    }
+    
 
     /**
      * Logs Message when a message is deleted
@@ -48,11 +57,15 @@ public class LoggingListener {
      */
     @EventSubscriber
     public void onMessageDelete(MessageDeleteEvent event) {
+        String channelId = getLoggingChannel(event.getGuild());
+        if(null == channelId || !isLoggingEnabled(event.getGuild())){
+            return;
+        }
         Utils.writeMessageToChannel(
                 "`" + timeFormat.format(new Date()) + "` **" + event.getMessage().getAuthor().getName()
                 + "'s** message was deleted in *#" + event.getMessage().getChannel().getName() + ": "
                 + event.getMessage(),
-                event.getMessage().getChannel().getGuild().getChannelByID(LOGGING_CHANNEL));
+                event.getMessage().getChannel().getGuild().getChannelByID(Long.parseLong(channelId)));
 
     }
 
@@ -64,6 +77,10 @@ public class LoggingListener {
      */
     @EventSubscriber
     public void onMessageUpdate(MessageUpdateEvent event) {
+        String channelId = getLoggingChannel(event.getGuild());
+        if(null == channelId || !isLoggingEnabled(event.getGuild())){
+            return;
+        }
         if (event.getNewMessage().getAuthor().getClient() == KingBotv2Application.getClient()) {
             Utils.writeMessageToChannel(
                     "`" + timeFormat.format(new Date()) + "` __**" + event.getOldMessage().getAuthor().getName()
@@ -83,6 +100,10 @@ public class LoggingListener {
      */
     @EventSubscriber
     public void onUserJoin(UserJoinEvent event) {
+        String channelId = getLoggingChannel(event.getGuild());
+        if(null == channelId || !isLoggingEnabled(event.getGuild())){
+            return;
+        }
         Utils.writeMessageToChannel("`" + timeFormat.format(new Date()) + "`" + " The user: __**"
                 + event.getUser().getName() + "**__ has joined the server",
                 event.getGuild().getChannelByID(LOGGING_CHANNEL));
@@ -96,6 +117,10 @@ public class LoggingListener {
      */
     @EventSubscriber
     public void onUserLeave(UserLeaveEvent event) {
+        String channelId = getLoggingChannel(event.getGuild());
+        if(null == channelId || !isLoggingEnabled(event.getGuild())){
+            return;
+        }
         Utils.writeMessageToChannel("`" + timeFormat.format(new Date()) + "`" + " The user: __**"
                 + event.getUser().getName() + "**__ has left the server",
                 event.getGuild().getChannelByID(LOGGING_CHANNEL));
@@ -111,6 +136,7 @@ public class LoggingListener {
      */
     @EventSubscriber
     public void onPresenceChangeEvent(PresenceUpdateEvent event) {
+        
         if (event.getNewPresence().getStatus() == StatusType.STREAMING
                 && "Element Box".equals(event.getUser().getName())) {
             Utils.writeMessageToChannel(

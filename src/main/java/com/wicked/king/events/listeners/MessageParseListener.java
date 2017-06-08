@@ -1,20 +1,17 @@
 package com.wicked.king.events.listeners;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.wicked.king.constants.BotConstants;
 import com.wicked.king.db.DBAccessorPerson;
 import com.wicked.king.events.AboutEvent;
+import com.wicked.king.events.AddUserToAnnouncementEvent;
 import com.wicked.king.events.AdminCommandsEvent;
 import com.wicked.king.events.AdviceEvent;
 import com.wicked.king.events.AwwEvent;
 import com.wicked.king.events.BanEvent;
 import com.wicked.king.events.CommandsEvent;
-import com.wicked.king.events.CreatePollEvent;
 import com.wicked.king.events.EightBallEvent;
-import com.wicked.king.events.GetPollEvent;
 import com.wicked.king.events.GetServerInfoEvent;
 import com.wicked.king.events.HelpEvent;
 import com.wicked.king.events.InsultEvent;
@@ -25,6 +22,16 @@ import com.wicked.king.events.LennyEvent;
 import com.wicked.king.events.MiddleFingerEvent;
 import com.wicked.king.events.PrivateMessageEvent;
 import com.wicked.king.events.PruneEvent;
+import com.wicked.king.events.ReminderEvent;
+import com.wicked.king.events.RemoveLoggingEvent;
+import com.wicked.king.events.RemoveStreamingChannelEvent;
+import com.wicked.king.events.RemoveUserLeaveEvent;
+import com.wicked.king.events.RemoveUserfromAnnouncementEvent;
+import com.wicked.king.events.RemoveWelcomeEvent;
+import com.wicked.king.events.SetLoggingEvent;
+import com.wicked.king.events.SetStreamingChannelEvent;
+import com.wicked.king.events.SetUserLeaveEvent;
+import com.wicked.king.events.SetWelcomeEvent;
 import com.wicked.king.events.ShrugEvent;
 import com.wicked.king.events.TableFlipEvent;
 import com.wicked.king.events.TimeoutEvent;
@@ -35,8 +42,6 @@ import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 
 public class MessageParseListener {
-	
-	private static final Logger logger = LogManager.getLogger(BotEventListener.class);
 	
 	@Autowired
 	private DBAccessorPerson repository;
@@ -52,30 +57,10 @@ public class MessageParseListener {
 	 */
 	@EventSubscriber
 	public void onMessageReceived(MessageReceivedEvent event) {
-
-
-//		
-//		Person author = repository.findById(event.getMessage().getAuthor().getStringID());
-//		if (author == null){
-//			author = new Person();
-//			IUser user = event.getMessage().getAuthor();
-//			author.setId(user.getStringID());
-//			author.setLevel(1);
-//			author.setName(user.getDisplayName(event.getMessage().getGuild()));
-//			author.setXp(0);
-//			author.setXpNextRank(5);
-//			
-//		}
-//		author.setXp(author.getXp() + 10);
-//		repository.save(author);
 		
 		//TODO refactor, please just refactor this
 		if(event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "prune")){
 			event.getClient().getDispatcher().dispatch(new PruneEvent(event.getMessage()));
-
-		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "getpoll")) {
-			logger.warn("creating poll event");
-			event.getClient().getDispatcher().dispatch(new GetPollEvent(event.getMessage()));
 
 		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "timeout ")) {
 			event.getClient().getDispatcher().dispatch(new TimeoutEvent(event.getMessage()));
@@ -125,9 +110,6 @@ public class MessageParseListener {
 		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "serverinfo")) {
 			event.getClient().getDispatcher().dispatch(new GetServerInfoEvent(event.getMessage()));
 			
-		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "createpoll")) {
-			event.getClient().getDispatcher().dispatch(new CreatePollEvent(event.getMessage()));
-			
 		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "lenny") || event.getMessage().getContent().startsWith("/lenny")) {
 			event.getClient().getDispatcher().dispatch(new LennyEvent(event.getMessage()));
 			
@@ -139,6 +121,39 @@ public class MessageParseListener {
 			
 		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "aww")) {
             event.getClient().getDispatcher().dispatch(new AwwEvent(event.getMessage()));
+            
+        } else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "setlogging")) {
+            event.getClient().getDispatcher().dispatch(new SetLoggingEvent(event.getMessage()));
+            
+        } else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "removelogging")) {
+            event.getClient().getDispatcher().dispatch(new RemoveLoggingEvent(event.getMessage()));
+            
+        } else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "setwelcome")) {
+            event.getClient().getDispatcher().dispatch(new SetWelcomeEvent(event.getMessage()));
+            
+        } else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "removewelcome")) {
+            event.getClient().getDispatcher().dispatch(new RemoveWelcomeEvent(event.getMessage()));
+            
+        } else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "setleave")) {
+            event.getClient().getDispatcher().dispatch(new SetUserLeaveEvent(event.getMessage()));
+            
+        } else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "removeleave")) {
+            event.getClient().getDispatcher().dispatch(new RemoveUserLeaveEvent(event.getMessage()));
+            
+        } else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "setstreamingchannel")) {
+            event.getClient().getDispatcher().dispatch(new SetStreamingChannelEvent(event.getMessage()));
+            
+        } else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "removestreamingchannel")) {
+            event.getClient().getDispatcher().dispatch(new RemoveStreamingChannelEvent(event.getMessage()));
+            
+        } else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "addusertostreaming")) {
+            event.getClient().getDispatcher().dispatch(new AddUserToAnnouncementEvent(event.getMessage()));
+            
+        } else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "removeusertostreaming")) {
+            event.getClient().getDispatcher().dispatch(new RemoveUserfromAnnouncementEvent(event.getMessage()));
+            
+        } else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "remindme")) {
+            event.getClient().getDispatcher().dispatch(new ReminderEvent(event.getMessage()));
             
         }
 	}

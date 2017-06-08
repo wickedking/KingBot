@@ -1,5 +1,7 @@
 package com.wicked.king.bean;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -9,13 +11,18 @@ import org.springframework.data.mongodb.core.mapping.Document;
  *
  */
 @Document(collection = "serverinfo")
-public class ServerInfo {
+public class ServerInfo  {
 	
 	/**
 	 * Id used for database
 	 */
     @Id
 	private String id;
+    
+    /**
+     * Id of the discord server
+     */
+    private String serverId;
 	
 	/**
 	 * The Id of the logging Channel
@@ -30,12 +37,47 @@ public class ServerInfo {
 	/**
 	 * Is logging enabled for this server
 	 */
-	private boolean doLogging;
+	private boolean doLogging = false;
 	
 	/**
-	 * Is annoucements enabled for this server
+	 * Is announcement enabled for this server
 	 */
-	private boolean doAnnouncements;
+	private boolean doStreamingAnnouncements = false;
+	
+	/**
+	 * Make an announcement for people joining server
+	 */
+	private boolean doWelcomeAnnouncements = false;
+	
+	/**
+	 * Make an announcement for poeple leaving the server
+	 */
+	private boolean doLeaveAnnouncements = false;
+	
+	/**
+	 * Channel to do welcome and leaving announcements on
+	 */
+	private String welcomeChannel;
+	
+	/**
+	 * Message for welcome announcement
+	 */
+	private String welcomeMessage;
+	
+	/**
+	 * Message for streaming Announcement
+	 */
+	private String streamingMessage;
+	
+	/**
+	 * Message for user leave message
+	 */
+	private String leaveMessage;
+	
+	/**
+	 * Users to announce when streaming
+	 */
+	private List<String> userIdForAnnouncement = new ArrayList<>();
 
 	/**
 	 * 
@@ -106,7 +148,7 @@ public class ServerInfo {
 	 * @return
 	 */
 	public boolean isDoAnnouncements() {
-		return doAnnouncements;
+		return doStreamingAnnouncements;
 	}
 
 	/**
@@ -114,8 +156,76 @@ public class ServerInfo {
 	 * @param doAnnouncements
 	 */
 	public void setDoAnnouncements(boolean doAnnouncements) {
-		this.doAnnouncements = doAnnouncements;
+		this.doStreamingAnnouncements = doAnnouncements;
 	}
+
+    public boolean isDoWelcomeAnnouncements() {
+        return doWelcomeAnnouncements;
+    }
+
+    public void setDoWelcomeAnnouncements(boolean doWelcomeAnnouncements) {
+        this.doWelcomeAnnouncements = doWelcomeAnnouncements;
+    }
+
+    public boolean isDoLeaveAnnouncements() {
+        return doLeaveAnnouncements;
+    }
+
+    public void setDoLeaveAnnouncements(boolean doLeaveAnnouncements) {
+        this.doLeaveAnnouncements = doLeaveAnnouncements;
+    }
+
+    public String getWelcomeChannel() {
+        return welcomeChannel;
+    }
+
+    public void setWelcomeChannel(String welcomeChannel) {
+        this.welcomeChannel = welcomeChannel;
+    }
+
+    public String getServerId() {
+        return serverId;
+    }
+
+    public void setServerId(String serverId) {
+        this.serverId = serverId;
+    }
+
+    public List<String> getUserIdForAnnouncement() {
+        return userIdForAnnouncement;
+    }
+
+    public void addUserIdForAnnouncement(String userIdForAnnouncement) {
+        this.userIdForAnnouncement.add(userIdForAnnouncement);
+    }
+    
+    public void removeUserIdForAnnouncement(String userIdForAnnouncement){
+        this.userIdForAnnouncement.remove(userIdForAnnouncement);
+    }
+
+    public String getWelcomeMessage() {
+        return welcomeMessage;
+    }
+
+    public void setWelcomeMessage(String welcomeMessage) {
+        this.welcomeMessage = welcomeMessage;
+    }
+
+    public String getStreamingMessage() {
+        return streamingMessage;
+    }
+
+    public void setStreamingMessage(String streamingMessage) {
+        this.streamingMessage = streamingMessage;
+    }
+
+    public String getLeaveMessage() {
+        return leaveMessage;
+    }
+
+    public void setLeaveMessage(String leaveMessage) {
+        this.leaveMessage = leaveMessage;
+    }
 	
 	
 	

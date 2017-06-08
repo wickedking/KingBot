@@ -1,17 +1,23 @@
 package com.wicked.king.utils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.wicked.king.KingBotv2Application;
+import com.wicked.king.bean.ServerInfo;
 import com.wicked.king.bean.UtilString;
 import com.wicked.king.constants.BotConstants;
+import com.wicked.king.db.DBAccessorServerInfo;
 import com.wicked.king.db.DBAccessorUtils;
 import sx.blah.discord.handle.obj.IChannel;
+import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.DiscordException;
@@ -28,6 +34,11 @@ import sx.blah.discord.util.RequestBuffer;
 public class Utils {
 
 	private static DBAccessorUtils repository;
+	
+	private static DBAccessorServerInfo serverRepository;
+	
+	private static Map<String, ServerInfo> serverInfo;
+
 
 	/**
 	 * Logger used for class
@@ -62,6 +73,79 @@ public class Utils {
 	private Utils(){
 
 	}
+	
+	/**
+     * Constructs the list of Jokes
+     * @return the list of jokes
+     */
+    private static void constructJokeList(){
+    
+    	List<UtilString> utilString = repository.findByListType("jokes");
+    	ArrayList<String> jokes = new ArrayList<>();
+    	for(UtilString uString : utilString){
+    		jokes.add(uString.getMessage());
+    	}
+    
+    	jokeList = jokes;
+    }
+
+    /**
+     * Constructs the list of insults
+     * @return the list of insults
+     */
+    private static void constructInsultList(){
+    	List<UtilString> utilString = repository.findByListType("insults");
+    	ArrayList<String> insults = new ArrayList<>();
+    	for(UtilString uString : utilString){
+    		insults.add(uString.getMessage());
+    	}
+    	insultList = insults;
+    
+    }
+
+    /**
+     * Constructs the list of advice
+     * @return the list of advice
+     */
+    private static void constructAdvice() {
+    	List<UtilString> utilString = repository.findByListType("advice");
+    	ArrayList<String> advice = new ArrayList<>();
+    	for(UtilString uString : utilString){
+    		advice.add(uString.getMessage());
+    	}
+    	adviceList = advice;
+    }
+
+    private static void createServerInfoList(){
+        while(!KingBotv2Application.getClient().isReady()){
+            //do nothing and wait for it to update
+        }
+        List<ServerInfo> serverList = serverRepository.findAll();
+        serverInfo = new HashMap<>();
+        for(ServerInfo server : serverList){
+            serverInfo.put(server.getServerId(), server);
+        }
+
+        List<IGuild> guilds =  KingBotv2Application.getClient().getGuilds();
+        boolean guildsUpdated = false;
+        for(IGuild guild : guilds){
+            if(!serverInfo.containsKey(guild.getStringID())){
+                guildsUpdated = true;
+                ServerInfo createdServer = createServerInfo(guild);
+                serverInfo.put(createdServer.getId(), createdServer);
+            }
+        }
+        if(guildsUpdated){
+            serverRepository.save(new ArrayList<ServerInfo>(serverInfo.values()));
+        }
+
+    }
+    
+    private static ServerInfo createServerInfo(IGuild guild){
+        ServerInfo server = new ServerInfo();
+        server.setServerId(guild.getStringID());
+        return server;
+    }
 
 	/**
 	 * Writes specified message to the specified channel
@@ -183,57 +267,34 @@ public class Utils {
 		return adviceList.get(index);
 	}
 
-	/**
-	 * Constructs the list of Jokes
-	 * @return the list of jokes
-	 */
-	private static void constructJokeList(){
-
-		List<UtilString> utilString = repository.findByListType("jokes");
-		ArrayList<String> jokes = new ArrayList<>();
-		for(UtilString uString : utilString){
-			jokes.add(uString.getMessage());
-		}
-
-		jokeList = jokes;
+	public static ServerInfo getServerInfo(String guildId){
+        return serverInfo.get(guildId);
+    }
+	
+	public static Map<String, ServerInfo> getAllServerInfo(){
+	    return serverInfo;
 	}
-
-	/**
-	 * Constructs the list of insults
-	 * @return the list of insults
-	 */
-	private static void constructInsultList(){
-		List<UtilString> utilString = repository.findByListType("insults");
-		ArrayList<String> insults = new ArrayList<>();
-		for(UtilString uString : utilString){
-			insults.add(uString.getMessage());
-		}
-		insultList = insults;
-
+	
+	public static void saveServer(String guildId){
+	    serverRepository.save(serverInfo.get(guildId));
 	}
-
-	/**
-	 * Constructs the list of advice
-	 * @return the list of advice
-	 */
-	private static void constructAdvice() {
-		List<UtilString> utilString = repository.findByListType("advice");
-		ArrayList<String> advice = new ArrayList<>();
-		for(UtilString uString : utilString){
-			advice.add(uString.getMessage());
-		}
-		adviceList = advice;
+	
+	@Scheduled(fixedRate = 600000)
+	private void saveAllServers(){
+	    serverRepository.save(serverInfo.values());
 	}
 
 	/**
 	 * 
 	 * @param repository2
 	 */
-	public static void setRepo(DBAccessorUtils repository2) {
+	public static void setRepo(DBAccessorUtils repository2, DBAccessorServerInfo repo3) {
 		repository = repository2;
+		serverRepository = repo3;
 		constructJokeList();
 		constructInsultList();
 		constructAdvice();
+		createServerInfoList();
 
 	}
 

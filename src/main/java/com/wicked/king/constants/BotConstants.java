@@ -14,7 +14,7 @@ public class BotConstants {
     public static final String STANDALONE = "standalone";
     public static final String INCLUDED = "included";
 
-    public static final String HELP_MESSAGE = "``` `commands - Lists the commands \n `serverinfo - Shows basic info about the server \n `help - use to find more specific info on each command \n `playmusic - a work in progress \n `joke - Will return a random joke \n `advice - will return some less than helpful advice \n `insult - will give a nice insult \n `8ball - will return a random 8 ball message \n `about - About the bot and the author \n /lenny, /middlefinger, /tableflip, /untableflip, /shrug can all be used for ascii posts```";
+    public static final String HELP_MESSAGE = "``` `commands - Lists the commands \n `serverinfo - Shows basic info about the server \n `help - use to find more specific info on each command \n `joke - Will return a random joke \n `advice - will return some less than helpful advice \n `insult - will give a nice insult \n `8ball - will return a random 8 ball message \n `about - About the bot and the author \n `remindme - Will private message you after x amount of time. Put in 'minutes' or 'hours', not both \n /lenny, /middlefinger, /tableflip, /untableflip, /shrug can all be used for ascii posts```";
     public static final String ADMIN_HELP_MESSAGE = "``` `ban - (admin only) Bans the person tagged \n `timeout - (admin only) Removes the ability to type or talk from the person \n `kick - (admin only) Kicks the person from the server \n `prune - (admin only) Deletes the last 'X' messages```";
 
     public static final String NOT_AUTHORIZED = "Not Authorized to use this command";
@@ -37,8 +37,6 @@ public class BotConstants {
     public static final String UN_TABLE_FLIP = "┬─┬﻿ ノ( ゜-゜ノ)";
 
     public static final String UNFINISHED = "This feature is not yet implemented. Please tell WickedKing to get off his lazy ass and finish it";
-
-    public static final String POLL_URL = "https://strawpoll.me/api/v2/";
 
     /**
      * 

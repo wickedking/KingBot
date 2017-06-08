@@ -9,8 +9,10 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import com.wicked.king.db.DBAccessorPerson;
+import com.wicked.king.db.DBAccessorServerInfo;
 import com.wicked.king.db.DBAccessorUtils;
 import com.wicked.king.events.listeners.BotEventListener;
 import com.wicked.king.events.listeners.HelpListener;
@@ -24,6 +26,7 @@ import sx.blah.discord.api.IDiscordClient;
 @EnableAutoConfiguration
 @EnableMongoRepositories(basePackageClasses=DBAccessorUtils.class)
 @ComponentScan({"com.wicked.king"})
+@EnableScheduling
 public class KingBotv2Application implements CommandLineRunner{
 	
 private static final Logger logger = LogManager.getLogger(KingBotv2Application.class);
@@ -39,6 +42,9 @@ private static final Logger logger = LogManager.getLogger(KingBotv2Application.c
 	@Autowired
 	private DBAccessorPerson repository2;
 	
+	@Autowired
+	private DBAccessorServerInfo repository3;
+	
 	/**
 	 * Hardcoded Guild Id. Used mainly for testing.
 	 */
@@ -53,7 +59,7 @@ private static final Logger logger = LogManager.getLogger(KingBotv2Application.c
 	public void run(String... args) {
 		
 		logger.warn("Hello World");
-		BotEventListener listener = new BotEventListener(repository);
+		BotEventListener listener = new BotEventListener(repository, repository3);
 		client.getDispatcher().registerListener(listener);		
 		client.getDispatcher().registerListener(new LoggingListener(client.getGuildByID(Long.parseUnsignedLong(GUILD_ID))));
 		client.getDispatcher().registerListener(new HelpListener());

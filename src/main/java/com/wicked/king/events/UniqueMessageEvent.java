@@ -7,13 +7,13 @@ import sx.blah.discord.handle.obj.IMessage;
  * @author King
  *
  */
-public class AwwEvent extends CustomEvent {
-    
+public class UniqueMessageEvent extends CustomEvent {
+
     /**
      * 
      * @param message
      */
-    public AwwEvent(IMessage message) {
+    public UniqueMessageEvent(IMessage message) {
         super(message);
     }
 

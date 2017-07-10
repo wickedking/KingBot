@@ -1,6 +1,5 @@
 package com.wicked.king.events.listeners;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -11,9 +10,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +21,6 @@ import com.wicked.king.events.AboutEvent;
 import com.wicked.king.events.AddUserToAnnouncementEvent;
 import com.wicked.king.events.AdminCommandsEvent;
 import com.wicked.king.events.AdviceEvent;
-import com.wicked.king.events.AwwEvent;
 import com.wicked.king.events.BanEvent;
 import com.wicked.king.events.CommandsEvent;
 import com.wicked.king.events.EightBallEvent;
@@ -375,33 +370,6 @@ public class BotEventListener {
                 BotEventListener.changeGame(event);
             }
         }, 0, 30, TimeUnit.MINUTES);
-    }
-    
-    /**
-     * Test method for reddit /aww
-     * @param event
-     */
-    @EventSubscriber
-    public void onAwwEvent(AwwEvent event){
-        Document doc = null;
-        try {
-            doc = Jsoup.connect("https://www.reddit.com/r/aww/").get();
-        } catch (IOException e) {
-            logger.warn(e);
-        }
-
-        Elements elements = doc.getElementsByClass("sitetable");
-
-        String html = doc.html();
-        System.out.println(elements.size());
-        int index = html.indexOf("https://i.redditmedia.com/");
-        html = html.substring(index);
-        int endIndex = html.indexOf(".jpg");
-        String link = html.substring(0, endIndex + 4);
-        System.out.println("This is the link: " +  link);
-
-
-
     }
     
     /**

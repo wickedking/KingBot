@@ -281,6 +281,7 @@ public class Utils {
 	
 	@Scheduled(fixedRate = 600000)
 	private void saveAllServers(){
+	    logger.warn("Saving Servers");
 	    serverRepository.save(serverInfo.values());
 	}
 

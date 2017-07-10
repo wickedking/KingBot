@@ -6,6 +6,11 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import com.wicked.king.bean.Person;
 
+/**
+ * 
+ * @author King
+ *
+ */
 public interface DBAccessorPerson extends MongoRepository<Person, String>{
 	
 	public Person findByName(String name);

@@ -8,6 +8,7 @@ import java.lang.reflect.Modifier;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -15,6 +16,10 @@ import com.wicked.king.bean.Person;
 import com.wicked.king.bean.ServerInfo;
 import com.wicked.king.bean.UtilString;
 import com.wicked.king.constants.BotConstants;
+import com.wicked.king.events.ShrugEvent;
+
+import sx.blah.discord.api.events.EventDispatcher;
+import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -87,8 +92,7 @@ public class KingBotv2ApplicationTests {
 	}
 	
 	@Test
-    public void testAboutEvent(){
-        
+    public void testAboutEvent(){ 
 	    
     }
 //	

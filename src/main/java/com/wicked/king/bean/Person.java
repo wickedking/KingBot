@@ -3,20 +3,44 @@ package com.wicked.king.bean;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+/**
+ * Bean implementation of a Person.
+ * 
+ * @author King
+ *
+ */
 @Document(collection = "people")
 public class Person {
 	
+    /**
+     * The DB implementation of an Id
+     */
 	@Id
 	private String id;
 	
+	/**
+	 * The userid of the discord user
+	 */
 	private String userid;
 	
+	/**
+	 * The name of the user
+	 */
 	private String name;
 	
+	/**
+	 * The XP level of the user
+	 */
 	private int level;
 	
+	/**
+	 * The total xp of the user
+	 */
 	private int xp;
 	
+	/**
+	 * The xp needed for next level
+	 */
 	private int xpNextRank;
 
 	/**
@@ -26,10 +50,18 @@ public class Person {
 		//blank constructor
 	}
 	
+	/**
+	 * 
+	 * @return String The Id
+	 */
 	public String getId() {
 		return id;
 	}
 
+	/**
+	 * 
+	 * @param id
+	 */
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -90,10 +122,18 @@ public class Person {
 		this.xp = xp;
 	}
 
+	/**
+	 * 
+	 * @return Xp to next rank
+	 */
 	public int getXpNextRank() {
 		return xpNextRank;
 	}
 
+	/**
+	 * 
+	 * @param xpNextRank
+	 */
 	public void setXpNextRank(int xpNextRank) {
 		this.xpNextRank = xpNextRank;
 	}

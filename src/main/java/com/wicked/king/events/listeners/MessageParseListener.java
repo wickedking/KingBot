@@ -8,7 +8,6 @@ import com.wicked.king.events.AboutEvent;
 import com.wicked.king.events.AddUserToAnnouncementEvent;
 import com.wicked.king.events.AdminCommandsEvent;
 import com.wicked.king.events.AdviceEvent;
-import com.wicked.king.events.AwwEvent;
 import com.wicked.king.events.BanEvent;
 import com.wicked.king.events.CommandsEvent;
 import com.wicked.king.events.EightBallEvent;
@@ -57,6 +56,7 @@ public class MessageParseListener {
 	 */
 	@EventSubscriber
 	public void onMessageReceived(MessageReceivedEvent event) {
+	    
 		
 		//TODO refactor, please just refactor this
 		if(event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "prune")){
@@ -119,10 +119,7 @@ public class MessageParseListener {
 		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "leavechannel")) {
 			event.getClient().getDispatcher().dispatch(new LeaveChannelEvent(event.getMessage()));
 			
-		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "aww")) {
-            event.getClient().getDispatcher().dispatch(new AwwEvent(event.getMessage()));
-            
-        } else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "setlogging")) {
+		} else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "setlogging")) {
             event.getClient().getDispatcher().dispatch(new SetLoggingEvent(event.getMessage()));
             
         } else if (event.getMessage().getContent().startsWith(BotConstants.BOT_PREFIX + "removelogging")) {
